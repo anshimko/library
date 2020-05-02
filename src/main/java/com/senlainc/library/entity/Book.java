@@ -1,5 +1,7 @@
 package com.senlainc.library.entity;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +14,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "books")
 public class Book extends Model {
@@ -21,20 +25,20 @@ public class Book extends Model {
 	@Column(name = "title")
 	private String title;
 	
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "books_authors", 
 			joinColumns = @JoinColumn(name = "books_id"), 
 			inverseJoinColumns = @JoinColumn(name = "authors_id"))
-	private Set<Author> authors;
+	private Set<Author> authors = new HashSet<Author>();
 	
 	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
-	private List<RentHistory> rentHistories;
+	private List<RentHistory> rentHistories = new ArrayList<RentHistory>();
 	
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "books_catalogs", 
 			joinColumns = @JoinColumn(name = "books_id"), 
 			inverseJoinColumns = @JoinColumn(name = "catalogs_id"))
-	private List<Catalog> catalogs;
+	private List<Catalog> catalogs = new ArrayList<Catalog>();
 
 	public Book() {
 		super();
@@ -64,6 +68,7 @@ public class Book extends Model {
 		this.authors = authors;
 	}
 
+	@JsonIgnore
 	public List<RentHistory> getRentHistories() {
 		return rentHistories;
 	}
@@ -84,9 +89,6 @@ public class Book extends Model {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((authors == null) ? 0 : authors.hashCode());
-		result = prime * result + ((catalogs == null) ? 0 : catalogs.hashCode());
-		result = prime * result + ((rentHistories == null) ? 0 : rentHistories.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
 	}
@@ -100,21 +102,6 @@ public class Book extends Model {
 		if (getClass() != obj.getClass())
 			return false;
 		Book other = (Book) obj;
-		if (authors == null) {
-			if (other.authors != null)
-				return false;
-		} else if (!authors.equals(other.authors))
-			return false;
-		if (catalogs == null) {
-			if (other.catalogs != null)
-				return false;
-		} else if (!catalogs.equals(other.catalogs))
-			return false;
-		if (rentHistories == null) {
-			if (other.rentHistories != null)
-				return false;
-		} else if (!rentHistories.equals(other.rentHistories))
-			return false;
 		if (title == null) {
 			if (other.title != null)
 				return false;
@@ -122,7 +109,5 @@ public class Book extends Model {
 			return false;
 		return true;
 	}
-
-	
 
 }

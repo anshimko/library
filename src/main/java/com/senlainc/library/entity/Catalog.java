@@ -1,5 +1,6 @@
 package com.senlainc.library.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -11,6 +12,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "catalogs")
 public class Catalog extends Model{
@@ -18,16 +21,13 @@ public class Catalog extends Model{
 	private static final long serialVersionUID = 3962204870182456153L;
 
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "parent_id", referencedColumnName = "id")
 	private Catalog parentCatalog;
 
 	
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "books_catalogs", 
-		joinColumns = @JoinColumn(name = "catalogs_id"), 
-		inverseJoinColumns = @JoinColumn(name = "books_id"))
-	private Set<Book> books;
+	@ManyToMany(mappedBy = "catalogs", fetch = FetchType.LAZY)
+	private Set<Book> books = new HashSet<Book>();
 	
 	@Column(name = "name")
 	private String name;
@@ -51,6 +51,7 @@ public class Catalog extends Model{
 		this.parentCatalog = parentCatalog;
 	}
 
+	@JsonIgnore
 	public Set<Book> getBooks() {
 		return books;
 	}
@@ -71,7 +72,6 @@ public class Catalog extends Model{
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((books == null) ? 0 : books.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((parentCatalog == null) ? 0 : parentCatalog.hashCode());
 		return result;
@@ -86,11 +86,6 @@ public class Catalog extends Model{
 		if (getClass() != obj.getClass())
 			return false;
 		Catalog other = (Catalog) obj;
-		if (books == null) {
-			if (other.books != null)
-				return false;
-		} else if (!books.equals(other.books))
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -103,7 +98,6 @@ public class Catalog extends Model{
 			return false;
 		return true;
 	}
-	
-	
+
 
 }

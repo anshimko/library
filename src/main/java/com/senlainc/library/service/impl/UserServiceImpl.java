@@ -14,14 +14,11 @@ import com.senlainc.library.service.UserService;
 @Service
 public class UserServiceImpl implements UserService{
 	
-	private final UserDAO userDAO;
-	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private UserDAO userDAO;
 	
 	@Autowired
-	public UserServiceImpl(UserDAO userDAO, PasswordEncoder passwordEncoder) {
-		this.userDAO = userDAO;
-		this.passwordEncoder = passwordEncoder;
-	}
+	private PasswordEncoder passwordEncoder;
 
 	@Override
 	@Transactional
@@ -46,13 +43,15 @@ public class UserServiceImpl implements UserService{
 	@Transactional
 	public boolean update(User user, int id) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		return userDAO.update(user, id);
+		userDAO.update(user, id);
+		return true;
 	}
 
 	@Override
 	@Transactional
 	public boolean delete(int id) {
-		return userDAO.delete(id);
+		userDAO.delete(id);
+		return true;
 	}
 
 }

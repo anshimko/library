@@ -10,6 +10,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "rent_history")
@@ -49,14 +53,16 @@ public class RentHistory extends Model{
 		this.returned = returned;
 	}
 
+	@JsonIgnore
 	public User getUser() {
 		return user;
 	}
 
-	public void setUserInfo(User user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 
+	@JsonIgnore
 	public Book getBook() {
 		return book;
 	}
@@ -65,6 +71,8 @@ public class RentHistory extends Model{
 		this.book = book;
 	}
 
+	@JsonFormat
+    (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	public Date getBorrowDate() {
 		return borrowDate;
 	}
@@ -73,6 +81,8 @@ public class RentHistory extends Model{
 		this.borrowDate = borrowDate;
 	}
 
+	@JsonFormat
+    (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	public Date getReturnDate() {
 		return returnDate;
 	}
@@ -133,6 +143,12 @@ public class RentHistory extends Model{
 		} else if (!user.equals(other.user))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "RentHistory [user=" + user + ", book=" + book + ", borrowDate=" + borrowDate + ", returnDate="
+				+ returnDate + ", returned=" + returned + "]";
 	}
 	
 	

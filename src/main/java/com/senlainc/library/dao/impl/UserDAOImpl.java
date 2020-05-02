@@ -79,7 +79,6 @@ public class UserDAOImpl implements UserDAO {
 		userInfo.setUser(user);
 		userInfo.setId(userOld.getUserInfo().getId());
 		session.saveOrUpdate(userInfo);
-		
 		return true;
 	}
 
@@ -93,6 +92,7 @@ public class UserDAOImpl implements UserDAO {
 		}	
 		session.delete(user);
 		return true;
+		
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.senlainc.library.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -10,6 +11,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "authors")
 public class Author extends Model {
@@ -19,11 +22,8 @@ public class Author extends Model {
 	@Column(name = "name")
 	private String name;
 
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "books_authors", 
-		joinColumns = @JoinColumn(name = "authors_id"), 
-		inverseJoinColumns = @JoinColumn(name = "books_id"))
-	private Set<Book> books;
+	@ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
+	private Set<Book> books = new HashSet<Book>();
 
 	public Author() {
 		super();
@@ -43,6 +43,7 @@ public class Author extends Model {
 		this.name = name;
 	}
 
+	@JsonIgnore
 	public Set<Book> getBooks() {
 		return books;
 	}
@@ -55,7 +56,6 @@ public class Author extends Model {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((books == null) ? 0 : books.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -69,11 +69,6 @@ public class Author extends Model {
 		if (getClass() != obj.getClass())
 			return false;
 		Author other = (Author) obj;
-		if (books == null) {
-			if (other.books != null)
-				return false;
-		} else if (!books.equals(other.books))
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -81,9 +76,6 @@ public class Author extends Model {
 			return false;
 		return true;
 	}
-	
-	
-	
-	
+
 
 }
