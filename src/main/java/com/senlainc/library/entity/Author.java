@@ -3,6 +3,7 @@ package com.senlainc.library.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,10 +12,14 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.SQLInsert;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "authors")
+@SQLInsert(sql = "INSERT IGNORE INTO authors (name) VALUES (?)")
+
 public class Author extends Model {
 
 	private static final long serialVersionUID = -875283374841894672L;
@@ -22,7 +27,10 @@ public class Author extends Model {
 	@Column(name = "name")
 	private String name;
 
-	@ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	@JoinTable(name = "books_authors", 
+	joinColumns = @JoinColumn(name = "authors_id"), 
+	inverseJoinColumns = @JoinColumn(name = "books_id"))
 	private Set<Book> books = new HashSet<Book>();
 
 	public Author() {
@@ -76,6 +84,5 @@ public class Author extends Model {
 			return false;
 		return true;
 	}
-
 
 }

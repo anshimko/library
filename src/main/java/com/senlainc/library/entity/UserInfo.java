@@ -1,6 +1,5 @@
 package com.senlainc.library.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -30,7 +29,7 @@ public class UserInfo extends Model{
 	@Column(name = "email")
 	private String email;
 	
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "users_id")
 	private User user;
 

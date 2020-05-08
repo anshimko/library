@@ -26,18 +26,13 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public void create(User user) {
 		Session session = sessionFactory.getCurrentSession();
-
-		UserRole userRole = new UserRole();
-		userRole.setId(2);
+		
+		UserRole userRole = session.get(UserRole.class, 2);
 		user.setRole(userRole);
 
-		UserInfo userInfo = user.getUserInfo();
-
-		user.setUserInfo(null);
-		session.saveOrUpdate(user);
-
-		userInfo.setUser(user);
-		session.saveOrUpdate(userInfo);
+		user.getUserInfo().setUser(user);
+		session.persist(user);
+		
 	}
 
 	@Override

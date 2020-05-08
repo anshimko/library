@@ -30,11 +30,11 @@ public class User extends Model {
 	@Column(name = "password")
 	private String password;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "user_role_id")
 	private UserRole role;
 
-	@OneToOne(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private UserInfo userInfo;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

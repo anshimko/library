@@ -3,6 +3,7 @@ package com.senlainc.library.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,13 +21,14 @@ public class Catalog extends Model{
 	
 	private static final long serialVersionUID = 3962204870182456153L;
 
-
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "parent_id", referencedColumnName = "id")
 	private Catalog parentCatalog;
 
-	
-	@ManyToMany(mappedBy = "catalogs", fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	@JoinTable(name = "books_catalogs", 
+	joinColumns = @JoinColumn(name = "catalogs_id"), 
+	inverseJoinColumns = @JoinColumn(name = "books_id"))
 	private Set<Book> books = new HashSet<Book>();
 	
 	@Column(name = "name")

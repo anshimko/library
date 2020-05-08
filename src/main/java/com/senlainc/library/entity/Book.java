@@ -5,14 +5,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.SQLInsert;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -25,19 +26,13 @@ public class Book extends Model {
 	@Column(name = "title")
 	private String title;
 	
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "books_authors", 
-			joinColumns = @JoinColumn(name = "books_id"), 
-			inverseJoinColumns = @JoinColumn(name = "authors_id"))
+	@ManyToMany(mappedBy = "books", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
 	private Set<Author> authors = new HashSet<Author>();
 	
 	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
 	private List<RentHistory> rentHistories = new ArrayList<RentHistory>();
 	
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "books_catalogs", 
-			joinColumns = @JoinColumn(name = "books_id"), 
-			inverseJoinColumns = @JoinColumn(name = "catalogs_id"))
+	@ManyToMany(mappedBy = "books", fetch = FetchType.LAZY)
 	private List<Catalog> catalogs = new ArrayList<Catalog>();
 
 	public Book() {
