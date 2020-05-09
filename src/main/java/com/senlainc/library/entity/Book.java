@@ -13,8 +13,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.SQLInsert;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -72,6 +70,7 @@ public class Book extends Model {
 		this.rentHistories = rentHistories;
 	}
 
+	@JsonIgnore
 	public List<Catalog> getCatalogs() {
 		return catalogs;
 	}
@@ -104,5 +103,13 @@ public class Book extends Model {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Book [title=" + title + ", authors=" + authors + ", rentHistories=" + rentHistories + ", catalogs="
+				+ catalogs + ", getId()=" + getId() + "]";
+	}
+	
+	
 
 }

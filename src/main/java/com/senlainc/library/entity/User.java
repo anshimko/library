@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "users")
+//@JsonInclude(Include.NON_NULL)
 public class User extends Model {
 
 	private static final long serialVersionUID = -4273276363939591585L;
@@ -38,7 +39,7 @@ public class User extends Model {
 	private UserInfo userInfo;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-	private List<RentHistory> rentHistories;
+	private List<RentHistory> rentHistories = new ArrayList<RentHistory>();
 
 	public User() {
 		super();

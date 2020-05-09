@@ -22,6 +22,11 @@ public abstract class Model implements Serializable {
 
 	}
 
+	public Model(int id) {
+		super();
+		this.id = id;
+	}
+
 	public int getId() {
 		return id;
 	}

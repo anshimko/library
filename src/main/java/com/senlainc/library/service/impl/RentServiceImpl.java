@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.senlainc.library.dao.RentDAO;
+import com.senlainc.library.entity.Book;
+import com.senlainc.library.entity.BookReturnDTO;
 import com.senlainc.library.entity.RentHistory;
 import com.senlainc.library.service.RentService;
 
@@ -18,25 +20,25 @@ public class RentServiceImpl implements RentService{
 
 	@Override
 	@Transactional
-	public List<RentHistory> read(int id) {
-		return rentDAO.read(id);
+	public List<RentHistory> readByBook(int id) {
+		return rentDAO.readByBook(id);
 	}
 
 	@Override
 	@Transactional
-	public List<RentHistory> readAvailable() {
+	public List<Book> readAvailable() {
 		return rentDAO.readAvailable();
 	}
 
 	@Override
 	@Transactional
-	public List<RentHistory> readBorrow() {
+	public List<BookReturnDTO> readBorrow() {
 		return rentDAO.readBorrow();
 	}
 
 	@Override
 	@Transactional
-	public List<RentHistory> readBorrowOverdue() {
+	public List<BookReturnDTO> readBorrowOverdue() {
 		return rentDAO.readBorrowOverdue();
 	}
 

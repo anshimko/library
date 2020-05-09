@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.senlainc.library.entity.Book;
-import com.senlainc.library.entity.RentHistory;
 import com.senlainc.library.service.BookService;
-import com.senlainc.library.service.UserService;
 
 @RestController
 @Validated

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.senlainc.library.entity.Book;
+import com.senlainc.library.entity.BookReturnDTO;
 import com.senlainc.library.entity.RentHistory;
 import com.senlainc.library.service.RentService;
 
@@ -23,38 +25,38 @@ public class RentController {
 	@Autowired
 	private RentService rentService;
 	
-	@GetMapping(value = "/rents/{id}") // this id book
+	@GetMapping(value = "/rents/book/{id}") // this is id book
 	public ResponseEntity<List<RentHistory>> read(@PathVariable 
 									 @Min(value = 1, message = "id must be greater than or equal to 1") int id) {
 		
-		final List<RentHistory> rentHistory = rentService.read(id);
+		final List<RentHistory> rentHistory = rentService.readByBook(id);
 		
 
 		return rentHistory != null ? new ResponseEntity<>(rentHistory, HttpStatus.OK)
 				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 	
-	@GetMapping(value = "/rents/available")
-	public ResponseEntity<List<RentHistory>> readAvailable() {
-		final List<RentHistory> rentHistorys = rentService.readAvailable();
+	@GetMapping(value = "/books/available")
+	public ResponseEntity<List<Book>> readAvailable() {
+		final List<Book> books = rentService.readAvailable();
 
-		return rentHistorys != null && !rentHistorys.isEmpty() ? new ResponseEntity<>(rentHistorys, HttpStatus.OK)
+		return books != null && !books.isEmpty() ? new ResponseEntity<>(books, HttpStatus.OK)
 				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 	
 	@GetMapping(value = "/rents/borrow")
-	public ResponseEntity<List<RentHistory>> readBorrow() {
-		final List<RentHistory> rentHistorys = rentService.readBorrow();
+	public ResponseEntity<List<BookReturnDTO>> readBorrow() {
+		final List<BookReturnDTO> books = rentService.readBorrow();
 
-		return rentHistorys != null && !rentHistorys.isEmpty() ? new ResponseEntity<>(rentHistorys, HttpStatus.OK)
+		return books != null && !books.isEmpty() ? new ResponseEntity<>(books, HttpStatus.OK)
 				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 	
 	@GetMapping(value = "/rents/borrow/overdue")
-	public ResponseEntity<List<RentHistory>> readBorrowOverdue() {
-		final List<RentHistory> rentHistorys = rentService.readBorrowOverdue();
+	public ResponseEntity<List<BookReturnDTO>> readBorrowOverdue() {
+		final List<BookReturnDTO> books = rentService.readBorrowOverdue();
 
-		return rentHistorys != null && !rentHistorys.isEmpty() ? new ResponseEntity<>(rentHistorys, HttpStatus.OK)
+		return books != null && !books.isEmpty() ? new ResponseEntity<>(books, HttpStatus.OK)
 				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 	
@@ -65,8 +67,8 @@ public class RentController {
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
-	@PutMapping(value = "/rents/returned/{id}")
-	public ResponseEntity<?> returnRentHistory(@PathVariable(name = "id") 
+	@PutMapping(value = "/rents/book/{id}")
+	public ResponseEntity<?> returned(@PathVariable(name = "id") 
 									@Min(value = 1, message = "id must be greater than or equal to 1") int id) {
 		final boolean updated = rentService.returned(id);
 

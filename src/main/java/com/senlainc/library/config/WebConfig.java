@@ -14,6 +14,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "com.senlainc.library")
@@ -37,8 +39,9 @@ public class WebConfig implements WebMvcConfigurer{
 	public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {
 		   RequestMappingHandlerAdapter requestMappingHandlerAdapter = new RequestMappingHandlerAdapter();
 		   requestMappingHandlerAdapter.setSupportedMethods(
-		       "POST", "GET", "PUT", "DELETE", "OPTIONS", "DELETE", "HEAD");
+		       "POST", "GET", "PUT", "DELETE", "OPTIONS", "HEAD");
 		   final MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+		   converter.getObjectMapper().setSerializationInclusion(Include.NON_EMPTY);
 		   List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
 		   messageConverters.add(converter);
 		   requestMappingHandlerAdapter.setMessageConverters(messageConverters);

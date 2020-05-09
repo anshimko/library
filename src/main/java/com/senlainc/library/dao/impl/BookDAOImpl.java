@@ -11,9 +11,6 @@ import org.springframework.stereotype.Repository;
 import com.senlainc.library.dao.BookDAO;
 import com.senlainc.library.entity.Author;
 import com.senlainc.library.entity.Book;
-import com.senlainc.library.entity.RentHistory;
-import com.senlainc.library.entity.User;
-import com.senlainc.library.entity.UserRole;
 import com.senlainc.library.exception.RecordNotFoundException;
 
 @Repository

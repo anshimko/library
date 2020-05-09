@@ -10,37 +10,53 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.PastOrPresent;
+
+import org.hibernate.annotations.SQLUpdate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "rent_history")
-public class RentHistory extends Model{
+@SQLUpdate(sql = "update rent_history set books_id=?, borrow_date=?, return_date=?, is_returned=?, users_id=? where id=?")
+public class RentHistory extends Model {
 
 	private static final long serialVersionUID = -4993737000145245063L;
 
-	@ManyToOne (fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "users_id")
 	private User user;
-	
-	@ManyToOne (fetch = FetchType.LAZY)
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "books_id")
 	private Book book;
-	
+
 	@Column(name = "borrow_date")
 	@Temporal(TemporalType.DATE)
+	@PastOrPresent(message = "Date must be past or present")
 	private Date borrowDate;
-	
+
 	@Column(name = "return_date")
 	@Temporal(TemporalType.DATE)
+	@FutureOrPresent(message = "Date must be future or present")
 	private Date returnDate;
-	
+
 	@Column(name = "is_returned")
 	private boolean returned;
 
 	public RentHistory() {
 		super();
+	}
+	
+	public RentHistory(@FutureOrPresent(message = "Date must be future or present") Date returnDate) {
+		super();
+		this.returnDate = returnDate;
+	}
+
+	public RentHistory(int id, boolean returned) {
+		super(id);
+		this.returned = returned;
 	}
 
 	public RentHistory(User user, Book book, Date borrowDate, Date returnDate, boolean returned) {
@@ -52,7 +68,6 @@ public class RentHistory extends Model{
 		this.returned = returned;
 	}
 
-	@JsonIgnore
 	public User getUser() {
 		return user;
 	}
@@ -61,7 +76,6 @@ public class RentHistory extends Model{
 		this.user = user;
 	}
 
-	@JsonIgnore
 	public Book getBook() {
 		return book;
 	}
@@ -70,8 +84,7 @@ public class RentHistory extends Model{
 		this.book = book;
 	}
 
-	@JsonFormat
-    (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	public Date getBorrowDate() {
 		return borrowDate;
 	}
@@ -80,8 +93,7 @@ public class RentHistory extends Model{
 		this.borrowDate = borrowDate;
 	}
 
-	@JsonFormat
-    (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	public Date getReturnDate() {
 		return returnDate;
 	}
@@ -147,9 +159,7 @@ public class RentHistory extends Model{
 	@Override
 	public String toString() {
 		return "RentHistory [user=" + user + ", book=" + book + ", borrowDate=" + borrowDate + ", returnDate="
-				+ returnDate + ", returned=" + returned + "]";
+				+ returnDate + ", returned=" + returned + ", getId()=" + getId() + "]";
 	}
-	
-	
 
 }

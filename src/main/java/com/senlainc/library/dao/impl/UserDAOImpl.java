@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import com.senlainc.library.dao.UserDAO;
 import com.senlainc.library.entity.User;
 import com.senlainc.library.entity.UserInfo;
-import com.senlainc.library.entity.UserRole;
 import com.senlainc.library.exception.RecordNotFoundException;
 
 @Repository
@@ -26,13 +25,9 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public void create(User user) {
 		Session session = sessionFactory.getCurrentSession();
-		
-		UserRole userRole = session.get(UserRole.class, 2);
-		user.setRole(userRole);
 
 		user.getUserInfo().setUser(user);
-		session.persist(user);
-		
+		session.saveOrUpdate(user);
 	}
 
 	@Override
@@ -48,7 +43,7 @@ public class UserDAOImpl implements UserDAO {
 		if(user == null) {
 			throw new RecordNotFoundException("User id '" + id + "' does no exist");
 		}
-		
+				
 		return user;
 	}
 
@@ -57,7 +52,6 @@ public class UserDAOImpl implements UserDAO {
 		Session session = sessionFactory.getCurrentSession();
 		
 		UserInfo userInfo = user.getUserInfo();
-		
 		User userOld = session.get(User.class, id);
 		
 		if(userOld == null) {
@@ -94,12 +88,12 @@ public class UserDAOImpl implements UserDAO {
 	public User findByLogin(String login) {
 		Session session = sessionFactory.getCurrentSession();
 
-		CriteriaBuilder builder = session.getCriteriaBuilder();
-		CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);
-		Root<User> root = criteriaQuery.from(User.class);
-		criteriaQuery.select(root).where(builder.like(root.get("login"), login));
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+		CriteriaQuery<User> criteria = cb.createQuery(User.class);
+		Root<User> root = criteria.from(User.class);
+		criteria.select(root).where(cb.like(root.get("login"), login));
 
-		return session.createQuery(criteriaQuery).getResultList().stream().findAny().orElse(null);
+		return session.createQuery(criteria).getResultList().stream().findAny().orElse(null);
 	}
 
 }
