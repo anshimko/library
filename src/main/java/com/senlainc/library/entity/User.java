@@ -15,10 +15,11 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.senlainc.library.constraint.Unique;
 
 @Entity
 @Table(name = "users")
-//@JsonInclude(Include.NON_NULL)
+@Unique(names = {"login"})
 public class User extends Model {
 
 	private static final long serialVersionUID = -4273276363939591585L;

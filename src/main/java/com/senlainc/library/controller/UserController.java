@@ -2,6 +2,7 @@ package com.senlainc.library.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class UserController {
 	private UserService userService;
 
 	@PostMapping(value = "/users")
-	public ResponseEntity<?> create(@RequestBody User user) {
+	public ResponseEntity<?> create(@RequestBody @Valid User user) {
 		
 		userService.create(user);
 		return new ResponseEntity<>(HttpStatus.CREATED);
@@ -53,7 +54,7 @@ public class UserController {
 	}
 
 	@PutMapping(value = "/users/{id}")
-	public ResponseEntity<?> update(@PathVariable(name = "id") int id, @RequestBody User user) {
+	public ResponseEntity<?> update(@PathVariable(name = "id") int id, @RequestBody @Valid User user) {
 		final boolean updated = userService.update(user, id);
 
 		return updated ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

@@ -12,16 +12,20 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.senlainc.library.constraint.Unique;
 
 @Entity
 @Table(name = "books")
+@Unique(names = {"title"})
 public class Book extends Model {
 
 	private static final long serialVersionUID = 563637046306602222L;
 
 	@Column(name = "title")
+	@NotBlank (message = "Title must not be empty")
 	private String title;
 	
 	@ManyToMany(mappedBy = "books", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})

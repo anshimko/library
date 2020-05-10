@@ -25,7 +25,6 @@ public class BookDAOImpl implements BookDAO {
 		
 		book.getAuthors().forEach(author -> author.getBooks().add(book));
 		session.persist(book);
-
 	}
 
 	@Override

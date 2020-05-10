@@ -10,9 +10,11 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.senlainc.library.constraint.Unique;
 
 @Entity
 @Table(name = "users_info")
+@Unique(names = {"email"})
 public class UserInfo extends Model{
 	
 	private static final long serialVersionUID = 4246732946965936555L;

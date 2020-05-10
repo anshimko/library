@@ -2,6 +2,7 @@ package com.senlainc.library.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class BookController {
 	private BookService bookService;
 
 	@PostMapping(value = "/books")
-	public ResponseEntity<?> create(@RequestBody Book book) {
+	public ResponseEntity<?> create(@RequestBody @Valid Book book) {
 		
 		bookService.create(book);
 		return new ResponseEntity<>(HttpStatus.CREATED);
@@ -54,7 +55,7 @@ public class BookController {
 
 	@PutMapping(value = "/books/{id}")
 	public ResponseEntity<?> update(@PathVariable(name = "id") 
-									@Min(value = 1, message = "id must be greater than or equal to 1") int id, @RequestBody Book book) {
+									@Min(value = 1, message = "id must be greater than or equal to 1") int id, @RequestBody @Valid Book book) {
 		final boolean updated = bookService.update(book, id);
 
 		return updated ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

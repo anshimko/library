@@ -9,9 +9,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.senlainc.library.constraint.Unique;
 
 @Entity
 @Table(name = "user_role")
+@Unique(names = {"name"})
 public class UserRole extends Model {
 
 	private static final long serialVersionUID = 5007545645153914019L;

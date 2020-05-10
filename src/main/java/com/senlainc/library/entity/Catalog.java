@@ -14,9 +14,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.senlainc.library.constraint.Unique;
 
 @Entity
 @Table(name = "catalogs")
+@Unique(names = {"name"})
 public class Catalog extends Model{
 	
 	private static final long serialVersionUID = 3962204870182456153L;
