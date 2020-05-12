@@ -1,6 +1,7 @@
 package com.senlainc.library.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.senlainc.library.entity.User;
@@ -26,10 +28,20 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	@GetMapping("/listHeaders")
+	public ResponseEntity<String> listAllHeaders(
+	  @RequestHeader Map<String, String> headers) {
+	    headers.forEach((key, value) -> {
+	        System.out.println((String.format(key + " : " + value)));
+	    });
+	 
+	    return new ResponseEntity<String>(
+	      String.format("Listed %d headers", headers.size()), HttpStatus.OK);
+	}
 
 	@PostMapping(value = "/users")
 	public ResponseEntity<?> create(@RequestBody @Valid User user) {
-		
 		userService.create(user);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
