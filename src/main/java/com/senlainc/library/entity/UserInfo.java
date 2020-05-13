@@ -28,7 +28,7 @@ public class UserInfo extends Model{
 	private String surname;
 	
 	@Email (message = "Email must be a valid email address")
-	@Column(name = "email")
+	@Column(name = "email", unique = true)
 	private String email;
 	
 	@OneToOne(fetch = FetchType.LAZY)

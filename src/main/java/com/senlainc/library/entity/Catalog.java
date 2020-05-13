@@ -33,7 +33,7 @@ public class Catalog extends Model{
 	inverseJoinColumns = @JoinColumn(name = "books_id"))
 	private Set<Book> books = new HashSet<Book>();
 	
-	@Column(name = "name")
+	@Column(name = "name", nullable = false, unique = true)
 	private String name;
 
 	public Catalog() {

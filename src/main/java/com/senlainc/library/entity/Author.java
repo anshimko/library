@@ -24,7 +24,7 @@ public class Author extends Model {
 
 	private static final long serialVersionUID = -875283374841894672L;
 
-	@Column(name = "name")
+	@Column(name = "name", nullable = false, unique = true)
 	private String name;
 
 	@ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)

@@ -18,7 +18,7 @@ public class UserRole extends Model {
 
 	private static final long serialVersionUID = 5007545645153914019L;
 
-	@Column(name = "name")
+	@Column(name = "name", nullable = false, unique = true)
 	private String name;
 
 	@OneToMany 

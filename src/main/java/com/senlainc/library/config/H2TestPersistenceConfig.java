@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -20,9 +21,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 @Configuration
-@PropertySource("classpath:persistence.properties")
+@PropertySource("classpath:testPersistence.properties")
 @EnableTransactionManagement
-public class PersistenceConfig implements WebMvcConfigurer{
+public class H2TestPersistenceConfig implements WebMvcConfigurer{
 	
 	@Autowired
     private Environment env;
@@ -35,6 +36,7 @@ public class PersistenceConfig implements WebMvcConfigurer{
 	}
 	
 	@Bean(destroyMethod = "close")
+	@Profile("test")
 	public ComboPooledDataSource dataSource(@Value("${jdbc.driver}") String driverClass,
 											@Value("${jdbc.url}") String url,
 											@Value("${jdbc.user}") String user,
@@ -55,6 +57,8 @@ public class PersistenceConfig implements WebMvcConfigurer{
 	}
 	
 	@Bean
+	@Profile("test")
+
 	public LocalSessionFactoryBean sessionFactory(ComboPooledDataSource dataSource) {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource);
@@ -64,6 +68,8 @@ public class PersistenceConfig implements WebMvcConfigurer{
 	}
 	
 	@Bean
+	@Profile("test")
+
 	public HibernateTransactionManager transactionManager(LocalSessionFactoryBean sessionFactory) {
 		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
 		transactionManager.setSessionFactory(sessionFactory.getObject());
@@ -71,11 +77,15 @@ public class PersistenceConfig implements WebMvcConfigurer{
 	}
 	
 	@Bean
+	@Profile("test")
+
 	public javax.validation.Validator localValidatorFactoryBean() {
 	    return new LocalValidatorFactoryBean();
 	}
 	
 	@Bean
+	@Profile("test")
+
 	public MethodValidationPostProcessor methodValidationPostProcessor() {
 	     return new MethodValidationPostProcessor();
 	}

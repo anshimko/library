@@ -25,11 +25,11 @@ public class User extends Model {
 	private static final long serialVersionUID = -4273276363939591585L;
 
 	@NotBlank (message = "Login must not be empty")
-	@Column(name = "login")
+	@Column(name = "login", nullable = false, unique = true)
 	private String login;
 
 	@NotBlank (message = "Password must not be empty")
-	@Column(name = "password")
+	@Column(name = "password", nullable = false)
 	private String password;
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
@@ -46,13 +46,12 @@ public class User extends Model {
 		super();
 	}
 
-	public User(String login, String password, UserRole role, UserInfo userInfo, List<RentHistory> rentHistories) {
+	public User(String login, String password, UserRole role, UserInfo userInfo) {
 		super();
 		this.login = login;
 		this.password = password;
 		this.role = role;
 		this.userInfo = userInfo;
-		this.rentHistories = rentHistories;
 	}
 
 	@JsonIgnore

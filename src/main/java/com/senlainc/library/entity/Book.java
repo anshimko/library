@@ -24,7 +24,7 @@ public class Book extends Model {
 
 	private static final long serialVersionUID = 563637046306602222L;
 
-	@Column(name = "title")
+	@Column(name = "title", nullable = false, unique = true)
 	@NotBlank (message = "Title must not be empty")
 	private String title;
 	

@@ -25,11 +25,11 @@ public class RentHistory extends Model {
 	private static final long serialVersionUID = -4993737000145245063L;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "users_id")
+	@JoinColumn(name = "users_id", nullable = false)
 	private User user;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "books_id")
+	@JoinColumn(name = "books_id", nullable = false)
 	private Book book;
 
 	@Column(name = "borrow_date")
