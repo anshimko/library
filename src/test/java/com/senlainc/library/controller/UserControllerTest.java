@@ -25,13 +25,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.senlainc.library.config.H2TestPersistenceConfig;
+import com.senlainc.library.config.PersistenceConfig;
 import com.senlainc.library.config.WebConfig;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { WebConfig.class,
-		H2TestPersistenceConfig.class }, loader = AnnotationConfigWebContextLoader.class)
+@ContextConfiguration(classes = {WebConfig.class,
+		PersistenceConfig.class }, loader = AnnotationConfigWebContextLoader.class)
 @WebAppConfiguration
 @ActiveProfiles("test")
 @Transactional
@@ -56,8 +56,4 @@ public class UserControllerTest {
 	    Assert.assertNotNull(wac.getBean("userController"));
 	}
 	
-	@Test
-	public void givenHomePageURI_whenMockMVC_thenReturnsIndexJSPViewName() throws Exception {
-	    this.mockMvc.perform(get("/homePage")).andDo(print()).andExpect(view().name("index"));
-	}
 }
