@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 @Configuration
-//@PropertySource("classpath:test-persistence.properties")
+@PropertySource("classpath:persistence.properties")
 @EnableTransactionManagement
 public class H2PersistanceConfig {
 	
