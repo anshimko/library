@@ -28,17 +28,6 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
-	
-	@GetMapping("/listHeaders")
-	public ResponseEntity<String> listAllHeaders(
-	  @RequestHeader Map<String, String> headers) {
-	    headers.forEach((key, value) -> {
-	        System.out.println((String.format(key + " : " + value)));
-	    });
-	 
-	    return new ResponseEntity<String>(
-	      String.format("Listed %d headers", headers.size()), HttpStatus.OK);
-	}
 
 	@PostMapping(value = "/users")
 	public ResponseEntity<?> create(@RequestBody @Valid User user) {

@@ -14,7 +14,7 @@ public abstract class Model implements Serializable {
 	private static final long serialVersionUID = -8388852535576051483L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
 	private int id;
 

@@ -39,7 +39,7 @@ public class UserInfo extends Model{
 		super();
 	}
 
-	public UserInfo(String name, String surname, String email, User user) {
+	public UserInfo(String name, String surname, String email) {
 		super();
 		this.name = name;
 		this.surname = surname;

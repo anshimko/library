@@ -6,6 +6,7 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,24 +17,20 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 @Configuration
-@PropertySource("classpath:persistence.properties")
+//@PropertySource("classpath:test-persistence.properties")
 @EnableTransactionManagement
-public class PersistenceConfig implements WebMvcConfigurer{
+public class H2PersistanceConfig {
 	
 	@Autowired
     private Environment env;
-	
+
 	@Bean
-	public DataSource dataSource() throws PropertyVetoException {
-		
+	@Profile("test")
+	public DataSource testDataSource() throws PropertyVetoException {
 		final DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(env.getProperty("jdbc.driver"));
 		dataSource.setUrl(env.getProperty("jdbc.url"));
@@ -43,29 +40,22 @@ public class PersistenceConfig implements WebMvcConfigurer{
 	}
 	
 	@Bean
-	public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
+	@Profile("test")
+	public LocalSessionFactoryBean testSessionFactory(DataSource testDataSource) {
 		final LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-		sessionFactory.setDataSource(dataSource);
+		sessionFactory.setDataSource(testDataSource);
 		sessionFactory.setPackagesToScan("com.senlainc.library.entity");
 		sessionFactory.setHibernateProperties(additionalProperties());
 		return sessionFactory;
 	}
 	
+	
 	@Bean
-	public HibernateTransactionManager transactionManager(LocalSessionFactoryBean sessionFactory) {
+	@Profile("test")
+	public HibernateTransactionManager transactionManager(@Qualifier("testSessionFactory")LocalSessionFactoryBean sessionFactory) {
 		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
 		transactionManager.setSessionFactory(sessionFactory.getObject());
 		return transactionManager;
-	}
-	
-	@Bean
-	public javax.validation.Validator localValidatorFactoryBean() {
-	    return new LocalValidatorFactoryBean();
-	}
-	
-	@Bean
-	public MethodValidationPostProcessor methodValidationPostProcessor() {
-	     return new MethodValidationPostProcessor();
 	}
 	
 	final Properties additionalProperties() {
@@ -74,7 +64,7 @@ public class PersistenceConfig implements WebMvcConfigurer{
         hibernateProperties.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
         hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "false");
         
+    
         return hibernateProperties;
     }
-
 }
