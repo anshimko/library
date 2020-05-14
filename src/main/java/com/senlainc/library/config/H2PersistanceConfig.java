@@ -7,7 +7,6 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -18,18 +17,16 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-
 @Configuration
-@PropertySource("classpath:persistence.properties")
+@PropertySource("classpath:test-persistence.properties")
 @EnableTransactionManagement
+@Profile("test")
 public class H2PersistanceConfig {
 	
 	@Autowired
     private Environment env;
 
 	@Bean
-	@Profile("test")
 	public DataSource testDataSource() throws PropertyVetoException {
 		final DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(env.getProperty("jdbc.driver"));
@@ -40,7 +37,6 @@ public class H2PersistanceConfig {
 	}
 	
 	@Bean
-	@Profile("test")
 	public LocalSessionFactoryBean testSessionFactory(DataSource testDataSource) {
 		final LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(testDataSource);
@@ -51,7 +47,6 @@ public class H2PersistanceConfig {
 	
 	
 	@Bean
-	@Profile("test")
 	public HibernateTransactionManager transactionManager(@Qualifier("testSessionFactory")LocalSessionFactoryBean sessionFactory) {
 		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
 		transactionManager.setSessionFactory(sessionFactory.getObject());

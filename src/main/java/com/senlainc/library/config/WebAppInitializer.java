@@ -8,6 +8,12 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 
 @Order(1)
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+	
+	@Override
+	public void onStartup(ServletContext servletContext) throws ServletException {
+		super.onStartup(servletContext);
+		servletContext.setInitParameter("spring.profiles.active", "dev");
+	}
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
