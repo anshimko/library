@@ -31,9 +31,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.senlainc.library.config.H2PersistenceConfig;
 import com.senlainc.library.config.WebConfig;
-import com.senlainc.library.entity.User;
-import com.senlainc.library.entity.UserInfo;
-import com.senlainc.library.entity.UserRole;
+import com.senlainc.library.entity.Book;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {WebConfig.class,
@@ -41,8 +39,7 @@ import com.senlainc.library.entity.UserRole;
 @WebAppConfiguration
 @ActiveProfiles("test")
 @Transactional
-public class UserControllerTest {
-
+public class BookControllerTest {
 	@Autowired
 	private WebApplicationContext wac;
 
@@ -59,19 +56,17 @@ public class UserControllerTest {
 
 		Assert.assertNotNull(servletContext);
 		Assert.assertTrue(servletContext instanceof MockServletContext);
-		Assert.assertNotNull(wac.getBean("userController"));
+		Assert.assertNotNull(wac.getBean("bookController"));
 	}
 
 	@Test
-	public void createUser() throws Exception {
+	public void createBook() throws Exception {
 		
-		UserInfo userInfo = new UserInfo("Andru", "Shymko", "yanshimko@gmail.com");
-		UserRole role = new UserRole("admin");
-		role.setId(1);
-		User user = new User("55anshimko", "1234", role, userInfo);
+		Book book = new Book();
+		book.setTitle("Fanny");
 		
-		this.mockMvc.perform(post("/users")
-				.content(ConverterObjectToJson.convert(user))
+		this.mockMvc.perform(post("/books")
+				.content(ConverterObjectToJson.convert(book))
 				.contentType(MediaType.APPLICATION_JSON)
 			    .accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated());
@@ -79,30 +74,30 @@ public class UserControllerTest {
 	}
 	
 	@Test
-	public void readUser() throws Exception {
+	public void readBook() throws Exception {
 		
-		this.mockMvc.perform(get("/users/{id}", "1")
+		this.mockMvc.perform(get("/books/{id}", "1")
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.login").value("anshimko"));
+				.andExpect(jsonPath("$.title").value("War and piec"));
 		
 	}
 	
 	@Test
-	public void readAllUsers() throws Exception {
+	public void readAllBooks() throws Exception {
 		
-		this.mockMvc.perform(get("/users/")
+		this.mockMvc.perform(get("/books/")
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$", hasSize(2)))
+				.andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].login", is("anshimko")))
-                .andExpect(jsonPath("$[1].id", is(2)))
-                .andExpect(jsonPath("$[1].login", is("dandy")));
+                .andExpect(jsonPath("$[0].title", is("War and piec")))
+                .andExpect(jsonPath("$[2].id", is(3)))
+                .andExpect(jsonPath("$[2].title", is("Monblan")));
 		
 	}
 	
@@ -124,9 +119,9 @@ public class UserControllerTest {
 //	}
 	
 	@Test
-	public void deleteUser() throws Exception {
+	public void deleteBook() throws Exception {
 		
-		this.mockMvc.perform(delete("/users/{id}", "2")
+		this.mockMvc.perform(delete("/books/{id}", "2")
 	            .contentType(MediaType.APPLICATION_JSON)
 	            .accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
@@ -135,3 +130,4 @@ public class UserControllerTest {
 	}
 
 }
+

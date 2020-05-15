@@ -2,9 +2,8 @@ package com.senlainc.library.controller;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -31,9 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.senlainc.library.config.H2PersistenceConfig;
 import com.senlainc.library.config.WebConfig;
-import com.senlainc.library.entity.User;
-import com.senlainc.library.entity.UserInfo;
-import com.senlainc.library.entity.UserRole;
+import com.senlainc.library.entity.RentHistory;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {WebConfig.class,
@@ -41,8 +38,8 @@ import com.senlainc.library.entity.UserRole;
 @WebAppConfiguration
 @ActiveProfiles("test")
 @Transactional
-public class UserControllerTest {
-
+public class RentControllerTest {
+	
 	@Autowired
 	private WebApplicationContext wac;
 
@@ -54,84 +51,103 @@ public class UserControllerTest {
 	}
 
 	@Test
-	public void givenWac_whenServletContext_thenItProvidesUserController() {
+	public void givenWac_whenServletContext_thenItProvidesRentController() {
 		ServletContext servletContext = wac.getServletContext();
 
 		Assert.assertNotNull(servletContext);
 		Assert.assertTrue(servletContext instanceof MockServletContext);
-		Assert.assertNotNull(wac.getBean("userController"));
+		Assert.assertNotNull(wac.getBean("rentController"));
 	}
 
 	@Test
-	public void createUser() throws Exception {
+	public void testRead() throws Exception {
 		
-		UserInfo userInfo = new UserInfo("Andru", "Shymko", "yanshimko@gmail.com");
-		UserRole role = new UserRole("admin");
-		role.setId(1);
-		User user = new User("55anshimko", "1234", role, userInfo);
-		
-		this.mockMvc.perform(post("/users")
-				.content(ConverterObjectToJson.convert(user))
-				.contentType(MediaType.APPLICATION_JSON)
-			    .accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isCreated());
-		
-	}
-	
-	@Test
-	public void readUser() throws Exception {
-		
-		this.mockMvc.perform(get("/users/{id}", "1")
-				.accept(MediaType.APPLICATION_JSON))
-				.andDo(print())
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.login").value("anshimko"));
-		
-	}
-	
-	@Test
-	public void readAllUsers() throws Exception {
-		
-		this.mockMvc.perform(get("/users/")
+		this.mockMvc.perform(get("/rents/book/{id}", "1")
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].login", is("anshimko")))
-                .andExpect(jsonPath("$[1].id", is(2)))
-                .andExpect(jsonPath("$[1].login", is("dandy")));
+                .andExpect(jsonPath("$[0].user.id", is(1)))
+                .andExpect(jsonPath("$[0].borrowDate", is("19-03-2020")))
+                .andExpect(jsonPath("$[0].returned", is(true)));
 		
 	}
 	
-//	@Test
-//	public void updateUser() throws Exception {
-//		
-//		UserInfo userInfo = new UserInfo("Andru", "Shymko", "himko@gmail.com");
-//		UserRole role = new UserRole("admin");
-//		role.setId(1);
-//		User user = new User("bajron", "1234", role, userInfo);
-//		
-//		this.mockMvc.perform(put("/users/{id}", "1")
-//				.content(asJsonString(user))
-//				.contentType(MediaType.APPLICATION_JSON)
-//				.accept(MediaType.APPLICATION_JSON))
-//				.andDo(print())
-//				.andExpect(status().isOk());
-//		
-//	}
-	
+
 	@Test
-	public void deleteUser() throws Exception {
+	public void testReadAvailable() throws Exception {
+		this.mockMvc.perform(get("/books/available")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].title", is("War and piec")));
+	}
+
+	@Test
+	public void testReadBorrow() throws Exception {
+		this.mockMvc.perform(get("/rents/borrow")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id", is(2)))
+                .andExpect(jsonPath("$[0].title", is("Idiot")));
+               
+	}
+
+	@Test
+	public void testReadBorrowOverdue() throws Exception {
+		this.mockMvc.perform(get("/rents/borrow/overdue")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$", hasSize(1)))
+				.andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].title", is("War and piec")));
+	}
+
+//	@Test
+//	public void testCreate() throws Exception {
+//		
+//		User user = new User();
+//		user.setId(2);
+//		Book book = new Book();
+//		book.setId(1);
+//		RentHistory rent = new RentHistory(user, book, Date.valueOf("2020-06-17"),  Date.valueOf("2020-07-17"), false);
+//		rent.setId(2);
+//		rent.setReturned(true);
+//		user.getRentHistories().add(rent);
+//		book.getRentHistories().add(rent);
+//		
+//		this.mockMvc.perform(post("/rents")
+//				.content(ConverterObjectToJson.convert(rent))
+//				.contentType(MediaType.APPLICATION_JSON)
+//			    .accept(MediaType.APPLICATION_JSON))
+//				.andExpect(status().isCreated());
+//		
+//	
+//	}
+
+	@Test
+	public void testReturned() throws Exception {
 		
-		this.mockMvc.perform(delete("/users/{id}", "2")
-	            .contentType(MediaType.APPLICATION_JSON)
-	            .accept(MediaType.APPLICATION_JSON))
+		RentHistory rent = new RentHistory();
+		rent.setId(2);
+		rent.setReturned(true);
+		
+		this.mockMvc.perform(put("/rents/book/{id}", 2)
+				.content(ConverterObjectToJson.convert(rent))
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk());
-		
 	}
 
 }
