@@ -38,6 +38,11 @@ public class AuthProviderImpl implements AuthenticationProvider{
 			throw new BadCredentialsException("Password is incorrect");
 		}
 		
+		
+//		if(!authentication.isAuthenticated()) {
+//			throw new BadCredentialsException("Access is denied");
+//		}
+		
 		Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
 	
 		return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);

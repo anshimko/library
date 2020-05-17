@@ -3,6 +3,7 @@ package com.senlainc.library.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService{
 	private PasswordEncoder passwordEncoder;
 
 	@Override
+	@Secured({"ROLE_ADMIN", "ROLE_READER"})
 	@Transactional
 	public void create(User user) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -28,18 +30,21 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	@Secured("ROLE_ADMIN")
 	@Transactional
 	public List<User> readAll() {
 		return userDAO.readAll();
 	}
 
 	@Override
+	@Secured({"ROLE_ADMIN", "ROLE_READER"})
 	@Transactional
 	public User read(int id) {
 		return userDAO.read(id);
 	}
 
 	@Override
+	@Secured({"ROLE_ADMIN", "ROLE_READER"})
 	@Transactional
 	public boolean update(User user, int id) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -48,6 +53,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	@Secured({"ROLE_ADMIN", "ROLE_READER"})
 	@Transactional
 	public boolean delete(int id) {
 		userDAO.delete(id);

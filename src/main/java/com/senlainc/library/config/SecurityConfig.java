@@ -5,6 +5,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,6 +19,7 @@ import com.senlainc.library.security.AuthenticationEntryPoint;
  
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 @ComponentScan("com.senlainc.library")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
  
@@ -29,12 +31,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthenticationEntryPoint authEntryPoint;
     
-//    @Bean
-//    public AuthenticationEntryPoint getBasicAuthEntryPoint(){
-//        return new AuthenticationEntryPoint();
-//    }
-    
-    
     @Autowired
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(authProvider);
@@ -45,9 +41,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   
       http.csrf().disable()
         .authorizeRequests()
-        .antMatchers("/users/**").hasRole("ADMIN")
-        .antMatchers("/books/**").hasRole("ADMIN")
-        .antMatchers("/rents/**").hasRole("ADMIN")
+        .anyRequest().authenticated()
+//        .antMatchers("/users/**").hasRole("ADMIN")
+//        .antMatchers("/books/**").hasRole("ADMIN")
+//        .antMatchers("/rents/**").hasRole("ADMIN")
         .and().httpBasic().realmName(REALM).authenticationEntryPoint(authEntryPoint)
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);//We don't need sessions to be created.
     }
