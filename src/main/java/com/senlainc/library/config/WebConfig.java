@@ -47,6 +47,5 @@ public class WebConfig implements WebMvcConfigurer{
 		   requestMappingHandlerAdapter.setMessageConverters(messageConverters);
 		   return requestMappingHandlerAdapter;
 		 }
-	
-	
+		
 }

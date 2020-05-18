@@ -8,12 +8,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.senlainc.library.constraint.Unique;
 
 @Entity
@@ -23,14 +21,11 @@ public class Catalog extends Model{
 	
 	private static final long serialVersionUID = 3962204870182456153L;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_id", referencedColumnName = "id")
 	private Catalog parentCatalog;
 
-	@ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-	@JoinTable(name = "books_catalogs", 
-	joinColumns = @JoinColumn(name = "catalogs_id"), 
-	inverseJoinColumns = @JoinColumn(name = "books_id"))
+	@ManyToMany(mappedBy = "catalogs", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
 	private Set<Book> books = new HashSet<Book>();
 	
 	@Column(name = "name", nullable = false, unique = true)
@@ -55,7 +50,7 @@ public class Catalog extends Model{
 		this.parentCatalog = parentCatalog;
 	}
 
-	@JsonIgnore
+	//@JsonIgnore
 	public Set<Book> getBooks() {
 		return books;
 	}

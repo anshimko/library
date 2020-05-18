@@ -29,11 +29,6 @@ public class ValidationManager {
 		criteria.add(Restrictions.eq(name, value));
 		return criteria.uniqueResult() == null ? true : false;
 		
-//		CriteriaBuilder cb = session.getCriteriaBuilder();
-//		CriteriaQuery<User> criteria = cb.createQuery(User.class);
-//		Root<User> root = criteria.from(User.class);
-//		criteria.select(root).where(cb.like(root.get("login"), login));
-		
 	}
 
 }

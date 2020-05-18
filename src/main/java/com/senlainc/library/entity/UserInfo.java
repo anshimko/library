@@ -43,9 +43,7 @@ public class UserInfo extends Model{
 		super();
 		this.name = name;
 		this.surname = surname;
-		this.email = email;
-		this.user = user;
-		
+		this.email = email;		
 	}
 
 	public String getName() {

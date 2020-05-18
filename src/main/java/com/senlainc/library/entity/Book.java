@@ -9,6 +9,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -34,11 +36,18 @@ public class Book extends Model {
 	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
 	private List<RentHistory> rentHistories = new ArrayList<RentHistory>();
 	
-	@ManyToMany(mappedBy = "books", fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	@JoinTable(name = "books_catalogs", 
+	joinColumns = @JoinColumn(name = "books_id"), 
+	inverseJoinColumns = @JoinColumn(name = "catalogs_id"))
 	private List<Catalog> catalogs = new ArrayList<Catalog>();
 
 	public Book() {
 		super();
+	}
+	
+	public Book(int id) {
+		super(id);
 	}
 
 	public Book(String title, Set<Author> authors, List<RentHistory> rentHistories, List<Catalog> catalogs) {
