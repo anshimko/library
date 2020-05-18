@@ -21,8 +21,16 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @ComponentScan(basePackages = "com.senlainc.library")
 public class WebConfig implements WebMvcConfigurer{
 	
+	@Override
 	public void addResourceHandlers(final ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+//        registry.addResourceHandler("/resources/**")
+//        .addResourceLocations("/resources/");
+        
+        registry.addResourceHandler("swagger-ui.html")
+        .addResourceLocations("classpath:/META-INF/resources/");
+   
+      registry.addResourceHandler("/webjars/**")
+        .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 	
 	@Bean
