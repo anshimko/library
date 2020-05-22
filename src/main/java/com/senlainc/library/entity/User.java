@@ -154,7 +154,7 @@ public class User extends Model {
 	@Override
 	public String toString() {
 		return "User [login=" + login + ", password=" + password + ", role=" + role + ", userInfo=" + userInfo
-				+ ", rentHistories=" + rentHistories + ", getId()=" + getId() + "]";
+				+ "]";
 	}
 
 	

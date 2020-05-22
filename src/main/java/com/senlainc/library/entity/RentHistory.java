@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "rent_history")
-@SQLUpdate(sql = "update rent_history set books_id=?, borrow_date=?, return_date=?, is_returned=?, users_id=? where id=?")
+//@SQLUpdate(sql = "update rent_history set books_id=?, borrow_date=?, return_date=?, is_returned=?, users_id=? where id=?")
 public class RentHistory extends Model {
 
 	private static final long serialVersionUID = -4993737000145245063L;

@@ -21,10 +21,11 @@ public class CatalogDAOImpl implements CatalogDAO{
 	SessionFactory sessionFactory;
 
 	@Override
-	public void create(Catalog catalog) {
+	public Catalog create(Catalog catalog) {
 		Session session = sessionFactory.getCurrentSession();
+		session.saveOrUpdate(catalog);
 		
-		session.persist(catalog);
+		return session.get(Catalog.class, catalog.getId());
 	}
 
 	@Override

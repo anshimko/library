@@ -21,8 +21,8 @@ public class BookServiceImpl implements BookService{
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	public void create(Book book) {
-		bookDAO.create(book);
+	public Book create(Book book) {
+		return bookDAO.create(book);
 	}
 
 	@Override
@@ -39,8 +39,8 @@ public class BookServiceImpl implements BookService{
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	public boolean update(Book book, Integer id) {
-		return bookDAO.update(book, id);
+	public Book update(Book book) {
+		return bookDAO.update(book);
 	}
 
 	@Override

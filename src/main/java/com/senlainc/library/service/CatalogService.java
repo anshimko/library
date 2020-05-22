@@ -4,7 +4,7 @@ import com.senlainc.library.entity.Catalog;
 
 public interface CatalogService {
 
-	void create(Catalog catalog);
+	Catalog create(Catalog catalog);
 
 	Catalog read(Integer id);
 

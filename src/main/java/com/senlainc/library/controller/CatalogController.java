@@ -29,8 +29,8 @@ public class CatalogController {
 	@PostMapping
 	public ResponseEntity<?> create(@RequestBody @Valid Catalog catalog) {
 		
-		catalogService.create(catalog);
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		Catalog newCatalog = catalogService.create(catalog);
+		return newCatalog != null ? read(newCatalog.getId()) : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 	}
 
 	@GetMapping(value = "/{id}")

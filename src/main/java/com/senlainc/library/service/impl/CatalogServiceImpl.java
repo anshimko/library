@@ -18,8 +18,8 @@ public class CatalogServiceImpl implements CatalogService{
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	public void create(Catalog catalog) {
-		catalogDAO.create(catalog);
+	public Catalog create(Catalog catalog) {
+		return catalogDAO.create(catalog);
 		
 	}
 

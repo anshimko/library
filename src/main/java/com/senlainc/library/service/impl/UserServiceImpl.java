@@ -24,9 +24,9 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	@Secured({"ROLE_ADMIN", "ROLE_READER"})
-	public void create(User user) {
+	public User create(User user) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		userDAO.create(user);	
+		return userDAO.create(user);	
 	}
 
 	@Override
@@ -43,10 +43,9 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	@Secured({"ROLE_ADMIN", "ROLE_READER"})
-	public boolean update(User user, Integer id) {
+	public User update(User user) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		userDAO.update(user, id);
-		return true;
+		return userDAO.update(user);
 	}
 
 	@Override

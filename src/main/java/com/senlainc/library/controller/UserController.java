@@ -31,8 +31,9 @@ public class UserController {
 
 	@PostMapping
 	public ResponseEntity<?> create(@RequestBody @Valid User user) {
-		userService.create(user);
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		User newUser = userService.create(user);
+		
+		return newUser != null ? read(newUser.getId()) : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 	}
 
 	@GetMapping
@@ -54,11 +55,11 @@ public class UserController {
 				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> update(@PathVariable(name = "id") Integer id, @RequestBody @Valid User user) {
-		final boolean updated = userService.update(user, id);
-
-		return updated ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+	@PutMapping
+	public ResponseEntity<?> update(@RequestBody User user) {
+		final User userUpdated = userService.update(user);
+		
+		return userUpdated != null ? read(userUpdated.getId()) : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 	}
 
 	@DeleteMapping(value = "/{id}")

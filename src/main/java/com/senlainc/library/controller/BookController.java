@@ -32,8 +32,8 @@ public class BookController {
 	@PostMapping
 	public ResponseEntity<?> create(@RequestBody @Valid Book book) {
 		
-		bookService.create(book);
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		Book newBook = bookService.create(book);
+		return newBook != null ? read(newBook.getId()) : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 	}
 
 	@GetMapping
@@ -58,9 +58,9 @@ public class BookController {
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<?> update(@PathVariable(name = "id") 
 									@Min(value = 1, message = "id must be greater than or equal to 1") Integer id, @RequestBody @Valid Book book) {
-		final boolean updated = bookService.update(book, id);
+		final Book bookUpdated = bookService.update(book);
 
-		return updated ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+		return bookUpdated != null ? read(bookUpdated.getId()) : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 	}
 
 	@DeleteMapping(value = "/{id}")

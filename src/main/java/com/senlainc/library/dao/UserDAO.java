@@ -6,13 +6,13 @@ import com.senlainc.library.entity.User;
 
 public interface UserDAO {
 
-	public void create(User user);
+	public User create(User user);
 
 	public List<User> readAll();
 
 	public User read(Integer id);
 
-	public boolean update(User user, Integer id);
+	public User update(User user);
 	
 	public boolean delete(Integer id);
 

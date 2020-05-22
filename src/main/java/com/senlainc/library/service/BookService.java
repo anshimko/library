@@ -6,13 +6,13 @@ import com.senlainc.library.entity.Book;
 
 public interface BookService {
 
-	void create(Book book);
+	Book create(Book book);
 
 	List<Book> readAll();
 
 	Book read(Integer id);
 
-	boolean update(Book book, Integer id);
+	Book update(Book book);
 
 	boolean delete(Integer id);
 

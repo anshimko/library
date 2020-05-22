@@ -22,11 +22,13 @@ public class BookDAOImpl implements BookDAO {
 	private SessionFactory sessionFactory;
 
 	@Override
-	public void create(Book book) {
+	public Book create(Book book) {
 		Session session = sessionFactory.getCurrentSession();
 		
 		book.getAuthors().forEach(author -> author.getBooks().add(book));
 		session.persist(book);
+		
+		return session.get(Book.class, book.getId());
 	}
 
 	@Override
@@ -57,13 +59,10 @@ public class BookDAOImpl implements BookDAO {
 	}
 
 	@Override
-	public boolean update(Book book, Integer id) {
+	public Book update(Book book) {
 		Session session = sessionFactory.getCurrentSession();
 		
-		Book oldBook = session.get(Book.class, id);
-		oldBook.setTitle(book.getTitle());
-		
-		return true;
+		return (Book) session.merge(book);
 	}
 
 	@Override

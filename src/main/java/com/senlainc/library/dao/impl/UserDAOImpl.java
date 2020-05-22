@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.senlainc.library.dao.UserDAO;
 import com.senlainc.library.entity.User;
 import com.senlainc.library.entity.UserInfo;
+import com.senlainc.library.entity.UserRole;
 import com.senlainc.library.exception.RecordNotFoundException;
 
 @Repository
@@ -27,11 +28,13 @@ public class UserDAOImpl implements UserDAO {
 	private SessionFactory sessionFactory;
 
 	@Override
-	public void create(User user) {
+	public User create(User user) {
 		Session session = sessionFactory.getCurrentSession();
-
 		user.getUserInfo().setUser(user);
+		
 		session.saveOrUpdate(user);
+
+		return session.get(User.class, user.getId());
 	}
 
 	@Override
@@ -47,32 +50,31 @@ public class UserDAOImpl implements UserDAO {
 		if(user == null) {
 			throw new RecordNotFoundException("User id '" + id + "' does no exist");
 		}
-				
 		return user;
 	}
 
 	@Override
-	public boolean update(User user, Integer id) {
+	public User update(User user) {
+
 		Session session = sessionFactory.getCurrentSession();
 		
+		Integer id = user.getId();
 		UserInfo userInfo = user.getUserInfo();
 		User userOld = session.get(User.class, id);
 		
 		if(userOld == null) {
 			throw new RecordNotFoundException("User id '" + id + "' does no exist");
-		}			
+		}
 		
 		session.evict(userOld);
 		
 		user.setId(id);
-		user.setRole(userOld.getRole());
-		user.setUserInfo(null);
-		session.saveOrUpdate(user);
 		
 		userInfo.setUser(user);
 		userInfo.setId(userOld.getUserInfo().getId());
 		session.saveOrUpdate(userInfo);
-		return true;
+		
+		return (User) session.merge(user);
 	}
 
 	@Override
