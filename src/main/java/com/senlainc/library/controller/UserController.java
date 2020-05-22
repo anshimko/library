@@ -15,25 +15,27 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.senlainc.library.entity.User;
 import com.senlainc.library.service.UserService;
 
 @RestController
+@RequestMapping(value = "/users")
 @Validated
 public class UserController {
 
 	@Autowired
 	private UserService userService;
 
-	@PostMapping(value = "/users")
+	@PostMapping
 	public ResponseEntity<?> create(@RequestBody @Valid User user) {
 		userService.create(user);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
-	@GetMapping(value = "/users")
+	@GetMapping
 	public ResponseEntity<List<User>> read() {
 		final List<User> users = userService.readAll();
 
@@ -41,9 +43,9 @@ public class UserController {
 				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	@GetMapping(value = "/users/{id}")
+	@GetMapping(value = "/{id}")
 	public ResponseEntity<User> read(@PathVariable 
-									 @Min(value = 1, message = "id must be greater than or equal to 1") int id) {
+									 @Min(value = 1, message = "id must be greater than or equal to 1") Integer id) {
 		
 		final User user = userService.read(id);
 		
@@ -52,15 +54,15 @@ public class UserController {
 				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	@PutMapping(value = "/users/{id}")
-	public ResponseEntity<?> update(@PathVariable(name = "id") int id, @RequestBody @Valid User user) {
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<?> update(@PathVariable(name = "id") Integer id, @RequestBody @Valid User user) {
 		final boolean updated = userService.update(user, id);
 
 		return updated ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 	}
 
-	@DeleteMapping(value = "/users/{id}")
-	public ResponseEntity<?> delete(@PathVariable(name = "id") int id) {
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<?> delete(@PathVariable(name = "id") Integer id) {
 		final boolean deleted = userService.delete(id);
 
 		return deleted ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

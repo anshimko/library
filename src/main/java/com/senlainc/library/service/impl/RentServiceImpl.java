@@ -14,6 +14,7 @@ import com.senlainc.library.entity.RentHistory;
 import com.senlainc.library.service.RentService;
 
 @Service
+@Transactional
 public class RentServiceImpl implements RentService{
 	
 	@Autowired
@@ -21,43 +22,37 @@ public class RentServiceImpl implements RentService{
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	@Transactional
-	public List<RentHistory> readByBook(int id) {
+	public List<RentHistory> readByBook(Integer id) {
 		return rentDAO.readByBook(id);
 	}
 
 	@Override
 	@Secured({"ROLE_ADMIN", "ROLE_READER"})
-	@Transactional
 	public List<Book> readAvailable() {
 		return rentDAO.readAvailable();
 	}
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	@Transactional
 	public List<BookReturnDTO> readBorrow() {
 		return rentDAO.readBorrow();
 	}
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	@Transactional
 	public List<BookReturnDTO> readBorrowOverdue() {
 		return rentDAO.readBorrowOverdue();
 	}
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	@Transactional
 	public void create(RentHistory rentHistory) {
 		rentDAO.create(rentHistory);
 	}
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	@Transactional
-	public boolean returned(int id) {
+	public boolean returned(Integer id) {
 		return rentDAO.returned(id);
 	}
 

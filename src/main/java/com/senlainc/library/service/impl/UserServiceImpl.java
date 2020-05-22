@@ -13,6 +13,7 @@ import com.senlainc.library.entity.User;
 import com.senlainc.library.service.UserService;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService{
 	
 	@Autowired
@@ -23,7 +24,6 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	@Secured({"ROLE_ADMIN", "ROLE_READER"})
-	@Transactional
 	public void create(User user) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		userDAO.create(user);	
@@ -31,22 +31,19 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	@Transactional
 	public List<User> readAll() {
 		return userDAO.readAll();
 	}
 
 	@Override
 	@Secured({"ROLE_ADMIN", "ROLE_READER"})
-	@Transactional
-	public User read(int id) {
+	public User read(Integer id) {
 		return userDAO.read(id);
 	}
 
 	@Override
 	@Secured({"ROLE_ADMIN", "ROLE_READER"})
-	@Transactional
-	public boolean update(User user, int id) {
+	public boolean update(User user, Integer id) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		userDAO.update(user, id);
 		return true;
@@ -54,8 +51,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	@Secured({"ROLE_ADMIN", "ROLE_READER"})
-	@Transactional
-	public boolean delete(int id) {
+	public boolean delete(Integer id) {
 		userDAO.delete(id);
 		return true;
 	}

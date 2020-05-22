@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.senlainc.library.entity.Book;
@@ -20,14 +21,15 @@ import com.senlainc.library.entity.RentHistory;
 import com.senlainc.library.service.RentService;
 
 @RestController
+@RequestMapping(value = "/rents")
 public class RentController {
 	
 	@Autowired
 	private RentService rentService;
 	
-	@GetMapping(value = "/rents/book/{id}") // this is id book
+	@GetMapping(value = "/book/{id}") // this is id book
 	public ResponseEntity<List<RentHistory>> read(@PathVariable 
-									 @Min(value = 1, message = "id must be greater than or equal to 1") int id) {
+									 @Min(value = 1, message = "id must be greater than or equal to 1") Integer id) {
 		
 		final List<RentHistory> rentHistory = rentService.readByBook(id);
 		
@@ -44,7 +46,7 @@ public class RentController {
 				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 	
-	@GetMapping(value = "/rents/borrow")
+	@GetMapping(value = "/borrow")
 	public ResponseEntity<List<BookReturnDTO>> readBorrow() {
 		final List<BookReturnDTO> books = rentService.readBorrow();
 
@@ -52,7 +54,7 @@ public class RentController {
 				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 	
-	@GetMapping(value = "/rents/borrow/overdue")
+	@GetMapping(value = "/borrow/overdue")
 	public ResponseEntity<List<BookReturnDTO>> readBorrowOverdue() {
 		final List<BookReturnDTO> books = rentService.readBorrowOverdue();
 
@@ -60,16 +62,16 @@ public class RentController {
 				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 	
-	@PostMapping(value = "/rents")
+	@PostMapping
 	public ResponseEntity<?> create(@RequestBody RentHistory rentHistory) {
 		
 		rentService.create(rentHistory);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
-	@PutMapping(value = "/rents/book/{id}")
+	@PutMapping(value = "/book/{id}")
 	public ResponseEntity<?> returned(@PathVariable(name = "id") 
-									@Min(value = 1, message = "id must be greater than or equal to 1") int id) {
+									@Min(value = 1, message = "id must be greater than or equal to 1") Integer id) {
 		final boolean updated = rentService.returned(id);
 
 		return updated ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

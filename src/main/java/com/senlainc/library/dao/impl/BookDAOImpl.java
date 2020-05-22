@@ -15,6 +15,8 @@ import com.senlainc.library.exception.RecordNotFoundException;
 
 @Repository
 public class BookDAOImpl implements BookDAO {
+	
+	private static final String QUERY_FROM_BOOK = "from Book";
 
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -31,7 +33,7 @@ public class BookDAOImpl implements BookDAO {
 	public List<Book> readAll() {
 		Session session = sessionFactory.getCurrentSession();
 
-		List<Book> books = session.createQuery("from Book", Book.class).list();
+		List<Book> books = session.createQuery(QUERY_FROM_BOOK, Book.class).list();
 		books.forEach(book -> {
 			Hibernate.initialize(book.getAuthors());
 			Hibernate.initialize(book.getCatalogs());
@@ -41,7 +43,7 @@ public class BookDAOImpl implements BookDAO {
 	}
 
 	@Override
-	public Book read(int id) {
+	public Book read(Integer id) {
 		Session session = sessionFactory.getCurrentSession();
 		Book book = session.get(Book.class, id);
 		if (book == null) {
@@ -55,7 +57,7 @@ public class BookDAOImpl implements BookDAO {
 	}
 
 	@Override
-	public boolean update(Book book, int id) {
+	public boolean update(Book book, Integer id) {
 		Session session = sessionFactory.getCurrentSession();
 		
 		Book oldBook = session.get(Book.class, id);
@@ -65,7 +67,7 @@ public class BookDAOImpl implements BookDAO {
 	}
 
 	@Override
-	public boolean delete(int id) {
+	public boolean delete(Integer id) {
 		Session session = sessionFactory.getCurrentSession();
 		Book book = session.byId(Book.class).load(id);
 		

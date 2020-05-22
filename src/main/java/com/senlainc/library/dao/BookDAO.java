@@ -10,10 +10,10 @@ public interface BookDAO {
 
 	List<Book> readAll();
 
-	Book read(int id);
+	Book read(Integer id);
 
-	boolean update(Book book, int id);
+	boolean update(Book book, Integer id);
 
-	boolean delete(int id);
+	boolean delete(Integer id);
 
 }

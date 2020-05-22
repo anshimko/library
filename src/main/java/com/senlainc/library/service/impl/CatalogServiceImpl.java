@@ -10,6 +10,7 @@ import com.senlainc.library.entity.Catalog;
 import com.senlainc.library.service.CatalogService;
 
 @Service
+@Transactional
 public class CatalogServiceImpl implements CatalogService{
 	
 	@Autowired
@@ -17,7 +18,6 @@ public class CatalogServiceImpl implements CatalogService{
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	@Transactional
 	public void create(Catalog catalog) {
 		catalogDAO.create(catalog);
 		
@@ -25,22 +25,19 @@ public class CatalogServiceImpl implements CatalogService{
 
 	@Override
 	@Secured({"ROLE_ADMIN", "ROLE_READER"})
-	@Transactional
-	public Catalog read(int id) {
+	public Catalog read(Integer id) {
 		return catalogDAO.read(id);
 	}
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	@Transactional
-	public boolean delete(int id) {
+	public boolean delete(Integer id) {
 		return catalogDAO.delete(id);
 	}
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	@Transactional
-	public void addBookInCatalog(int catalogId, int bookId) {
+	public void addBookInCatalog(Integer catalogId, Integer bookId) {
 		catalogDAO.addBookInCatalog(catalogId, bookId);
 		
 	}

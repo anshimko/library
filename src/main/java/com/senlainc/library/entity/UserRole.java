@@ -1,14 +1,9 @@
 package com.senlainc.library.entity;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.senlainc.library.constraint.Unique;
 
 @Entity
@@ -20,9 +15,6 @@ public class UserRole extends Model {
 
 	@Column(name = "name", nullable = false, unique = true)
 	private String name;
-
-	@OneToMany (mappedBy = "role")
-	private Set<User> users = new HashSet<User>();
 
 	public UserRole() {
 		super();
@@ -41,21 +33,12 @@ public class UserRole extends Model {
 		this.name = name;
 	}
 
-	@JsonIgnore
-	public Set<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(Set<User> users) {
-		this.users = users;
-	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((users == null) ? 0 : users.hashCode());
 		return result;
 	}
 
@@ -72,11 +55,6 @@ public class UserRole extends Model {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
-			return false;
-		if (users == null) {
-			if (other.users != null)
-				return false;
-		} else if (!users.equals(other.users))
 			return false;
 		return true;
 	}

@@ -25,7 +25,7 @@ public class Catalog extends Model{
 	@JoinColumn(name = "parent_id", referencedColumnName = "id")
 	private Catalog parentCatalog;
 
-	@ManyToMany(mappedBy = "catalogs", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+	@ManyToMany(mappedBy = "catalogs", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST}) // THIS IS EAGER 
 	private Set<Book> books = new HashSet<Book>();
 	
 	@Column(name = "name", nullable = false, unique = true)

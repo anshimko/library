@@ -22,19 +22,29 @@ import com.senlainc.library.entity.User;
 
 @Repository
 public class RentDAOImpl implements RentDAO {
+	
+	private static final String FIELD_ID = "id";
+	private static final String FIELD_BOOK = "book";
+	private static final String FIELD_TITLE = "title";
+	private static final String FIELD_RETURNED_DATE = "returnDate";
+	private static final String FIELD_RETURNED = "returned";
+	
+	private static final String TABLE_RENT_HISTORIES = "rentHistories";
+	
+	private static final String QUERY_RENT_IS_RETURNED = "UPDATE rent_history SET is_returned = true WHERE books_id = :book AND is_returned = false";
 
 	@Autowired
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<RentHistory> readByBook(int id) {
+	public List<RentHistory> readByBook(Integer id) {
 
 		Session session = sessionFactory.getCurrentSession();
 
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		CriteriaQuery<RentHistory> criteria = builder.createQuery(RentHistory.class);
 		Root<RentHistory> root = criteria.from(RentHistory.class);
-		criteria.select(root).where(builder.equal(root.get("book").get("id"), id));
+		criteria.select(root).where(builder.equal(root.get(FIELD_BOOK).get(FIELD_ID), id));
 
 		List<RentHistory> rents = session.createQuery(criteria).getResultList();
 
@@ -65,12 +75,11 @@ public class RentDAOImpl implements RentDAO {
 	}
 
 	@Override
-	public boolean returned(int id) {
+	public boolean returned(Integer id) {
 		Session session = sessionFactory.getCurrentSession();
 		
-		int check = session.createNativeQuery(
-				"UPDATE rent_history SET is_returned = true WHERE books_id = :book AND is_returned = false")
-					.setParameter("book", id)
+		int check = session.createNativeQuery(QUERY_RENT_IS_RETURNED)
+					.setParameter(FIELD_BOOK, id)
 					.executeUpdate();
 
 		return (check == 1) ? true : false;
@@ -83,9 +92,9 @@ public class RentDAOImpl implements RentDAO {
 		CriteriaBuilder cb = session.getCriteriaBuilder();
 		CriteriaQuery<Book> criteria = cb.createQuery(Book.class);
 		Root<Book> root = criteria.from(Book.class);
-		Join<Book, RentHistory> join = root.join("rentHistories");
+		Join<Book, RentHistory> join = root.join(TABLE_RENT_HISTORIES);
 		
-		criteria.select(root).where(cb.equal(join.get("returned"), true));
+		criteria.select(root).where(cb.equal(join.get(FIELD_RETURNED), true));
 		
 		List<Book> books = session.createQuery(criteria).getResultList();
 		books.forEach(book -> Hibernate.initialize(book.getAuthors()));
@@ -100,10 +109,10 @@ public class RentDAOImpl implements RentDAO {
 		CriteriaBuilder cb = session.getCriteriaBuilder();
 		CriteriaQuery<BookReturnDTO> criteria = cb.createQuery(BookReturnDTO.class);
 		Root<Book> root = criteria.from(Book.class);
-		Join<Book, RentHistory> join = root.join("rentHistories");
+		Join<Book, RentHistory> join = root.join(TABLE_RENT_HISTORIES);
 		
-		criteria.select(cb.construct(BookReturnDTO.class, root.get("id"), root.get("title"), join.get("returnDate")))
-				.where(cb.equal(join.get("returned"), false));
+		criteria.select(cb.construct(BookReturnDTO.class, root.get(FIELD_ID), root.get(FIELD_TITLE), join.get(FIELD_RETURNED_DATE)))
+				.where(cb.equal(join.get(FIELD_RETURNED), false));
 		
 		List<BookReturnDTO> books = session.createQuery(criteria).getResultList();
 		
@@ -117,12 +126,12 @@ public class RentDAOImpl implements RentDAO {
 		CriteriaBuilder cb = session.getCriteriaBuilder();
 		CriteriaQuery<BookReturnDTO> criteria = cb.createQuery(BookReturnDTO.class);
 		Root<Book> root = criteria.from(Book.class);
-		Join<Book, RentHistory> join = root.join("rentHistories");
+		Join<Book, RentHistory> join = root.join(TABLE_RENT_HISTORIES);
 		
-		criteria.select(cb.construct(BookReturnDTO.class, root.get("id"), root.get("title"), join.get("returnDate")));
+		criteria.select(cb.construct(BookReturnDTO.class, root.get(FIELD_ID), root.get(FIELD_TITLE), join.get(FIELD_RETURNED_DATE)));
 		
-		Predicate predicateForReturned = cb.equal(join.get("returned"), false);
-		Predicate predicateForReturnDate = cb.lessThan(join.get("returnDate"), cb.currentDate());
+		Predicate predicateForReturned = cb.equal(join.get(FIELD_RETURNED), false);
+		Predicate predicateForReturnDate = cb.lessThan(join.get(FIELD_RETURNED_DATE), cb.currentDate());
 		Predicate predicateForReturnedAndReturnDate = cb.and(predicateForReturned, predicateForReturnDate);
 				
 		criteria.where(predicateForReturnedAndReturnDate);

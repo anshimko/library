@@ -34,16 +34,6 @@ public class WebConfig implements WebMvcConfigurer{
     }
 	
 	@Bean
-	public InternalResourceViewResolver viewResolver() {
-		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-		viewResolver.setPrefix("/WEB-INF/view/");
-		viewResolver.setSuffix(".jsp");
-		viewResolver.setContentType("text/html;charset=UTF-8");
-		viewResolver.setCache(false);
-		return viewResolver;
-	}
-	
-	@Bean
 	public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {
 		   RequestMappingHandlerAdapter requestMappingHandlerAdapter = new RequestMappingHandlerAdapter();
 		   requestMappingHandlerAdapter.setSupportedMethods(

@@ -10,11 +10,11 @@ public interface UserDAO {
 
 	public List<User> readAll();
 
-	public User read(int id);
+	public User read(Integer id);
 
-	public boolean update(User user, int id);
+	public boolean update(User user, Integer id);
 	
-	public boolean delete(int id);
+	public boolean delete(Integer id);
 
 	public User findByLogin(String login);
 

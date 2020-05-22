@@ -18,6 +18,10 @@ import com.senlainc.library.exception.RecordNotFoundException;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
+	
+	private static final String FIELD_LOGIN = "login";
+	
+	private static final String QUERY_FROM_USER = "from User";
 
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -33,11 +37,11 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public List<User> readAll() {
 		Session session = sessionFactory.getCurrentSession();
-		return session.createQuery("from User", User.class).list();
+		return session.createQuery(QUERY_FROM_USER, User.class).list();
 	}
 
 	@Override
-	public User read(int id) {
+	public User read(Integer id) {
 		Session session = sessionFactory.getCurrentSession();
 		User user = session.get(User.class, id);
 		if(user == null) {
@@ -48,7 +52,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public boolean update(User user, int id) {
+	public boolean update(User user, Integer id) {
 		Session session = sessionFactory.getCurrentSession();
 		
 		UserInfo userInfo = user.getUserInfo();
@@ -72,7 +76,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public boolean delete(int id) {
+	public boolean delete(Integer id) {
 		Session session = sessionFactory.getCurrentSession();
 		User user = session.byId(User.class).load(id);
 		
@@ -91,7 +95,7 @@ public class UserDAOImpl implements UserDAO {
 		CriteriaBuilder cb = session.getCriteriaBuilder();
 		CriteriaQuery<User> criteria = cb.createQuery(User.class);
 		Root<User> root = criteria.from(User.class);
-		criteria.select(root).where(cb.like(root.get("login"), login));
+		criteria.select(root).where(cb.like(root.get(FIELD_LOGIN), login));
 
 		return session.createQuery(criteria).getResultList().stream().findAny().orElse(null);
 	}

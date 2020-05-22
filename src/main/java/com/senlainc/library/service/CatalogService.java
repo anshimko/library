@@ -6,10 +6,10 @@ public interface CatalogService {
 
 	void create(Catalog catalog);
 
-	Catalog read(int id);
+	Catalog read(Integer id);
 
-	boolean delete(int id);
+	boolean delete(Integer id);
 
-	void addBookInCatalog(int catalogId, int bookId);
+	void addBookInCatalog(Integer catalogId, Integer bookId);
 
 }

@@ -8,7 +8,7 @@ import com.senlainc.library.entity.RentHistory;
 
 public interface RentService {
 
-	List<RentHistory> readByBook(int id);
+	List<RentHistory> readByBook(Integer id);
 
 	List<Book> readAvailable();
 
@@ -18,6 +18,6 @@ public interface RentService {
 
 	void create(RentHistory rentHistory);
 
-	boolean returned(int id);
+	boolean returned(Integer id);
 
 }

@@ -11,7 +11,9 @@ import com.senlainc.library.dao.BookDAO;
 import com.senlainc.library.entity.Book;
 import com.senlainc.library.service.BookService;
 
+
 @Service
+@Transactional
 public class BookServiceImpl implements BookService{
 	
 	@Autowired
@@ -19,36 +21,31 @@ public class BookServiceImpl implements BookService{
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	@Transactional
 	public void create(Book book) {
 		bookDAO.create(book);
 	}
 
 	@Override
 	@Secured({"ROLE_ADMIN", "ROLE_READER"})
-	@Transactional
 	public List<Book> readAll() {
 		return bookDAO.readAll();
 	}
 
 	@Override
 	@Secured({"ROLE_ADMIN", "ROLE_READER"})
-	@Transactional
-	public Book read(int id) {
+	public Book read(Integer id) {
 		return bookDAO.read(id);
 	}
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	@Transactional
-	public boolean update(Book book, int id) {
+	public boolean update(Book book, Integer id) {
 		return bookDAO.update(book, id);
 	}
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	@Transactional
-	public boolean delete(int id) {
+	public boolean delete(Integer id) {
 		return bookDAO.delete(id);
 	}
 

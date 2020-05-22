@@ -16,13 +16,13 @@ public abstract class Model implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-	private int id;
+	private Integer id;
 
 	public Model() {
 
 	}
 
-	public Model(int id) {
+	public Model(Integer id) {
 		super();
 		this.id = id;
 	}
@@ -31,30 +31,8 @@ public abstract class Model implements Serializable {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + id;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Model other = (Model) obj;
-		if (id != other.id)
-			return false;
-		return true;
 	}
 
 }

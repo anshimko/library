@@ -28,7 +28,7 @@ public class CatalogDAOImpl implements CatalogDAO{
 	}
 
 	@Override
-	public Catalog read(int id) {
+	public Catalog read(Integer id) {
 		Session session = sessionFactory.getCurrentSession();
 		
 		Catalog catalog = session.get(Catalog.class, id);
@@ -55,7 +55,7 @@ public class CatalogDAOImpl implements CatalogDAO{
 	}
 
 	@Override
-	public boolean delete(int id) {
+	public boolean delete(Integer id) {
 		Session session = sessionFactory.getCurrentSession();
 
 		Catalog catalog = new Catalog();
@@ -65,20 +65,8 @@ public class CatalogDAOImpl implements CatalogDAO{
 	}
 
 	@Override
-	public void addBookInCatalog(int catalogId, int bookId) {
-		Session session = sessionFactory.getCurrentSession();
-		
-//		Catalog catalog = new Catalog();
-//		catalog.setId(catalogId);
-//		
-//		Book book = new Book();
-//		book.setId(bookId);
-//		book.getCatalogs().add(catalog);
-//		
-//		catalog.getBooks().add(book);
-//		
-//		session.saveOrUpdate(catalog);
-		
+	public void addBookInCatalog(Integer catalogId, Integer bookId) {
+		Session session = sessionFactory.getCurrentSession();		
 		
 		Catalog catalog = session.get(Catalog.class, catalogId);
 		Book book = session.get(Book.class, bookId);

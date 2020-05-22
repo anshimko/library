@@ -17,9 +17,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	
-	private final String INCORRECT_REQUEST = "INCORRECT_REQUEST";
-	private final String BAD_REQUEST = "BAD_REQUEST";
-	private final String ACCESS_DENIED = "ACCESS_DENIED";
+	private static final String INCORRECT_REQUEST = "INCORRECT_REQUEST";
+	private static final String BAD_REQUEST = "BAD_REQUEST";
+	private static final String ACCESS_DENIED = "ACCESS_DENIED";
 	
 	@ExceptionHandler(RecordNotFoundException.class)
 	public final ResponseEntity<ErrorResponse> handleUserNotFoundException
