@@ -27,7 +27,7 @@ public abstract class Model implements Serializable {
 		this.id = id;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 

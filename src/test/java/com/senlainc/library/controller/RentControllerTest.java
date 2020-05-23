@@ -4,21 +4,22 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.sql.Date;
+
 import javax.servlet.ServletContext;
 import javax.transaction.Transactional;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockServletContext;
@@ -34,7 +35,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.senlainc.library.config.H2PersistenceConfig;
 import com.senlainc.library.config.WebConfig;
+import com.senlainc.library.entity.Book;
 import com.senlainc.library.entity.RentHistory;
+import com.senlainc.library.entity.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {WebConfig.class,
@@ -42,7 +45,6 @@ import com.senlainc.library.entity.RentHistory;
 @WebAppConfiguration
 @ActiveProfiles("test")
 @WithMockUser(roles = "ADMIN")
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Transactional
 public class RentControllerTest {
 	
@@ -81,21 +83,19 @@ public class RentControllerTest {
                 .andExpect(jsonPath("$[0].user.id", is(1)))
                 .andExpect(jsonPath("$[0].borrowDate", is("19-03-2020")))
                 .andExpect(jsonPath("$[0].returned", is(true)));
-		
 	}
 	
-
-//	@Test
-//	public void testReadAvailable() throws Exception {
-//		this.mockMvc.perform(get("/books/available")
-//				.accept(MediaType.APPLICATION_JSON))
-//				.andDo(print())
-//				.andExpect(status().isOk())
-//				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//				.andExpect(jsonPath("$", hasSize(1)))
-//                .andExpect(jsonPath("$[0].id", is(1)))
-//                .andExpect(jsonPath("$[0].title", is("War and piec")));
-//	}
+	@Test
+	public void testReadAvailable() throws Exception {
+		this.mockMvc.perform(get("/rents/books/available")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].title", is("War and piec")));
+	}
 
 	@Test
 	public void testReadBorrow() throws Exception {
@@ -122,27 +122,24 @@ public class RentControllerTest {
                 .andExpect(jsonPath("$[0].title", is("War and piec")));
 	}
 
-//	@Test
-//	public void testCreate() throws Exception {
-//		
-//		User user = new User();
-//		user.setId(2);
-//		Book book = new Book();
-//		book.setId(1);
-//		RentHistory rent = new RentHistory(user, book, Date.valueOf("2020-06-17"),  Date.valueOf("2020-07-17"), false);
-//		rent.setId(2);
-//		rent.setReturned(true);
-//		user.getRentHistories().add(rent);
-//		book.getRentHistories().add(rent);
-//		
-//		this.mockMvc.perform(post("/rents")
-//				.content(ConverterObjectToJson.convert(rent))
-//				.contentType(MediaType.APPLICATION_JSON)
-//			    .accept(MediaType.APPLICATION_JSON))
-//				.andExpect(status().isCreated());
-//		
-//	
-//	}
+	@Test
+	public void testCreate() throws Exception {
+		
+		User user = new User();
+		user.setId(2);
+		Book book = new Book();
+		book.setId(1);
+		RentHistory rent = new RentHistory(user, book, Date.valueOf("2020-06-17"),  Date.valueOf("2020-07-17"), false);
+		rent.setId(5);
+		rent.getUser().getRentHistories().add(rent);
+		rent.getBook().getRentHistories().add(rent);
+		
+		this.mockMvc.perform(post("/rents")
+				.content(ConverterObjectToJson.convert(rent))
+				.contentType(MediaType.APPLICATION_JSON)
+			    .accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated());
+	}
 
 	@Test
 	public void testReturned() throws Exception {

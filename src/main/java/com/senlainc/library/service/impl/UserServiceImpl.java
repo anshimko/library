@@ -1,58 +1,35 @@
 package com.senlainc.library.service.impl;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.senlainc.library.dao.UserDAO;
 import com.senlainc.library.entity.User;
 import com.senlainc.library.service.UserService;
 
 @Service
-@Transactional
-public class UserServiceImpl implements UserService{
-	
-	@Autowired
-	private UserDAO userDAO;
-	
+public class UserServiceImpl extends AbstractService<User, UserDAO> implements UserService {
+
+	public UserServiceImpl(UserDAO repository) {
+		super(repository);
+	}
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Override
-	@Secured({"ROLE_ADMIN", "ROLE_READER"})
-	public User create(User user) {
+	public Optional<User> save(User user) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		return userDAO.create(user);	
+		return repository.save(user);
 	}
 
 	@Override
-	@Secured("ROLE_ADMIN")
-	public List<User> readAll() {
-		return userDAO.readAll();
-	}
-
-	@Override
-	@Secured({"ROLE_ADMIN", "ROLE_READER"})
-	public User read(Integer id) {
-		return userDAO.read(id);
-	}
-
-	@Override
-	@Secured({"ROLE_ADMIN", "ROLE_READER"})
-	public User update(User user) {
+	public Optional<User> update(User user) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		return userDAO.update(user);
-	}
-
-	@Override
-	@Secured({"ROLE_ADMIN", "ROLE_READER"})
-	public boolean delete(Integer id) {
-		userDAO.delete(id);
-		return true;
+		return repository.update(user);
 	}
 
 }

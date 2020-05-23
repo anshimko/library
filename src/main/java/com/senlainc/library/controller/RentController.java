@@ -32,34 +32,29 @@ public class RentController {
 									 @Min(value = 1, message = "id must be greater than or equal to 1") Integer id) {
 		
 		final List<RentHistory> rentHistory = rentService.readByBook(id);
-		
-
-		return rentHistory != null ? new ResponseEntity<>(rentHistory, HttpStatus.OK)
-				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	
+		return ResponseEntity.ok(rentHistory);
 	}
 	
 	@GetMapping(value = "/books/available")
 	public ResponseEntity<List<Book>> readAvailable() {
 		final List<Book> books = rentService.readAvailable();
 
-		return books != null && !books.isEmpty() ? new ResponseEntity<>(books, HttpStatus.OK)
-				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return ResponseEntity.ok(books);
 	}
 	
 	@GetMapping(value = "/borrow")
 	public ResponseEntity<List<BookReturnDTO>> readBorrow() {
 		final List<BookReturnDTO> books = rentService.readBorrow();
 
-		return books != null && !books.isEmpty() ? new ResponseEntity<>(books, HttpStatus.OK)
-				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return ResponseEntity.ok(books);
 	}
 	
 	@GetMapping(value = "/borrow/overdue")
 	public ResponseEntity<List<BookReturnDTO>> readBorrowOverdue() {
 		final List<BookReturnDTO> books = rentService.readBorrowOverdue();
 
-		return books != null && !books.isEmpty() ? new ResponseEntity<>(books, HttpStatus.OK)
-				: new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return ResponseEntity.ok(books);
 	}
 	
 	@PostMapping
@@ -70,11 +65,10 @@ public class RentController {
 	}
 	
 	@PutMapping(value = "/book/{id}")
-	public ResponseEntity<?> returned(@PathVariable(name = "id") 
+	public Boolean returned(@PathVariable(name = "id") 
 									@Min(value = 1, message = "id must be greater than or equal to 1") Integer id) {
-		final boolean updated = rentService.returned(id);
-
-		return updated ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+	
+		return rentService.returned(id);
 	}
 
 }

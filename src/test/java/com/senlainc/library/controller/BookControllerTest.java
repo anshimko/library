@@ -6,6 +6,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -16,10 +17,8 @@ import javax.transaction.Transactional;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockServletContext;
@@ -43,7 +42,6 @@ import com.senlainc.library.entity.Book;
 @WebAppConfiguration
 @ActiveProfiles("test")
 @WithMockUser(roles = "ADMIN")
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Transactional
 public class BookControllerTest {
 	@Autowired
@@ -78,54 +76,51 @@ public class BookControllerTest {
 				.content(ConverterObjectToJson.convert(book))
 				.contentType(MediaType.APPLICATION_JSON)
 			    .accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isCreated());
+				.andExpect(status().isOk());
 		
 	}
 	
-//	@Test
-//	public void readBook() throws Exception {
-//		
-//		this.mockMvc.perform(get("/books/{id}", "1")
-//				.accept(MediaType.APPLICATION_JSON))
-//				.andDo(print())
-//				.andExpect(status().isOk())
-//				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//				.andExpect(jsonPath("$.title").value("War and piec"));
-//		
-//	}
-//	
-//	@Test
-//	public void readAllBooks() throws Exception {
-//		
-//		this.mockMvc.perform(get("/books/")
-//				.accept(MediaType.APPLICATION_JSON))
-//				.andDo(print())
-//				.andExpect(status().isOk())
-//				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//				.andExpect(jsonPath("$", hasSize(3)))
-//                .andExpect(jsonPath("$[0].id", is(1)))
-//                .andExpect(jsonPath("$[0].title", is("War and piec")))
-//                .andExpect(jsonPath("$[2].id", is(3)))
-//                .andExpect(jsonPath("$[2].title", is("Monblan")));
-//		
-//	}
+	@Test
+	public void readBook() throws Exception {
+		
+		this.mockMvc.perform(get("/books/{id}", "1")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.title").value("War and piec"));
+		
+	}
 	
-//	@Test
-//	public void updateUser() throws Exception {
-//		
-//		UserInfo userInfo = new UserInfo("Andru", "Shymko", "himko@gmail.com");
-//		UserRole role = new UserRole("admin");
-//		role.setId(1);
-//		User user = new User("bajron", "1234", role, userInfo);
-//		
-//		this.mockMvc.perform(put("/users/{id}", "1")
-//				.content(asJsonString(user))
-//				.contentType(MediaType.APPLICATION_JSON)
-//				.accept(MediaType.APPLICATION_JSON))
-//				.andDo(print())
-//				.andExpect(status().isOk());
-//		
-//	}
+	@Test
+	public void readAllBooks() throws Exception {
+		
+		this.mockMvc.perform(get("/books")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].title", is("War and piec")))
+                .andExpect(jsonPath("$[2].id", is(3)))
+                .andExpect(jsonPath("$[2].title", is("Monblan")));
+		
+	}
+	
+	@Test
+	public void updateBook() throws Exception {
+		
+		Book book = new Book(1);
+		book.setTitle("Fanny M");
+		
+		this.mockMvc.perform(put("/books")
+				.content(ConverterObjectToJson.convert(book))
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk());
+	}
 	
 	@Test
 	public void deleteBook() throws Exception {
@@ -135,8 +130,6 @@ public class BookControllerTest {
 	            .accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk());
-		
 	}
-
 }
 

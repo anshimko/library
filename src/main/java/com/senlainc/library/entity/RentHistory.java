@@ -2,6 +2,7 @@ package com.senlainc.library.entity;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,22 +14,19 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.PastOrPresent;
 
-import org.hibernate.annotations.SQLUpdate;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "rent_history")
-//@SQLUpdate(sql = "update rent_history set books_id=?, borrow_date=?, return_date=?, is_returned=?, users_id=? where id=?")
 public class RentHistory extends Model {
 
 	private static final long serialVersionUID = -4993737000145245063L;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "users_id", nullable = false)
 	private User user;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "books_id", nullable = false)
 	private Book book;
 

@@ -1,6 +1,6 @@
 package com.senlainc.library.dao.impl;
 
-import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -8,55 +8,37 @@ import javax.persistence.criteria.Root;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.senlainc.library.dao.UserDAO;
 import com.senlainc.library.entity.User;
 import com.senlainc.library.entity.UserInfo;
-import com.senlainc.library.entity.UserRole;
 import com.senlainc.library.exception.RecordNotFoundException;
 
 @Repository
-public class UserDAOImpl implements UserDAO {
-	
+public class UserDAOImpl extends AbstractDAO<User> implements UserDAO{
+
 	private static final String FIELD_LOGIN = "login";
-	
-	private static final String QUERY_FROM_USER = "from User";
 
-	@Autowired
-	private SessionFactory sessionFactory;
+	public UserDAOImpl(SessionFactory sessionFactory) {
+		super(sessionFactory);
+		setClazz(User.class);
+	}	
 
 	@Override
-	public User create(User user) {
-		Session session = sessionFactory.getCurrentSession();
-		user.getUserInfo().setUser(user);
+	public Optional<User> save(User user) {
 		
+		Session session = getCurrentSession();
+		user.getUserInfo().setUser(user);
 		session.saveOrUpdate(user);
+		Optional<User> optional = Optional.ofNullable(session.get(User.class, user.getId()));
 
-		return session.get(User.class, user.getId());
+		return optional;
 	}
 
 	@Override
-	public List<User> readAll() {
-		Session session = sessionFactory.getCurrentSession();
-		return session.createQuery(QUERY_FROM_USER, User.class).list();
-	}
-
-	@Override
-	public User read(Integer id) {
-		Session session = sessionFactory.getCurrentSession();
-		User user = session.get(User.class, id);
-		if(user == null) {
-			throw new RecordNotFoundException("User id '" + id + "' does no exist");
-		}
-		return user;
-	}
-
-	@Override
-	public User update(User user) {
-
-		Session session = sessionFactory.getCurrentSession();
+	public Optional<User> update(User user) {
+		Session session = getCurrentSession();
 		
 		Integer id = user.getId();
 		UserInfo userInfo = user.getUserInfo();
@@ -74,22 +56,11 @@ public class UserDAOImpl implements UserDAO {
 		userInfo.setId(userOld.getUserInfo().getId());
 		session.saveOrUpdate(userInfo);
 		
-		return (User) session.merge(user);
-	}
+		Optional<User> optional = Optional.ofNullable((User) session.merge(user));
 
-	@Override
-	public boolean delete(Integer id) {
-		Session session = sessionFactory.getCurrentSession();
-		User user = session.byId(User.class).load(id);
-		
-		if(user == null) {
-			throw new RecordNotFoundException("User id '" + id + "' does no exist");
-		}	
-		session.delete(user);
-		return true;
-		
+		return optional;
 	}
-
+	
 	@Override
 	public User findByLogin(String login) {
 		Session session = sessionFactory.getCurrentSession();

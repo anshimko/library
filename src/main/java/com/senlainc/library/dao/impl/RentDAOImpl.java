@@ -71,7 +71,7 @@ public class RentDAOImpl implements RentDAO {
 		rentHistory.getUser().getRentHistories().add(rentHistory);
 		rentHistory.getBook().getRentHistories().add(rentHistory);
 
-		session.persist(rentHistory);
+		session.saveOrUpdate(rentHistory);
 	}
 
 	@Override

@@ -1,12 +1,12 @@
 package com.senlainc.library.dao.impl;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.senlainc.library.dao.CatalogDAO;
@@ -15,21 +15,15 @@ import com.senlainc.library.entity.Catalog;
 import com.senlainc.library.exception.RecordNotFoundException;
 
 @Repository
-public class CatalogDAOImpl implements CatalogDAO{
+public class CatalogDAOImpl extends AbstractDAO<Catalog> implements CatalogDAO{
 	
-	@Autowired
-	SessionFactory sessionFactory;
-
-	@Override
-	public Catalog create(Catalog catalog) {
-		Session session = sessionFactory.getCurrentSession();
-		session.saveOrUpdate(catalog);
-		
-		return session.get(Catalog.class, catalog.getId());
+	public CatalogDAOImpl(SessionFactory sessionFactory) {
+		super(sessionFactory);
+		setClazz(Catalog.class);
 	}
 
 	@Override
-	public Catalog read(Integer id) {
+	public Optional<Catalog> get(Integer id) {
 		Session session = sessionFactory.getCurrentSession();
 		
 		Catalog catalog = session.get(Catalog.class, id);
@@ -52,17 +46,7 @@ public class CatalogDAOImpl implements CatalogDAO{
 		
 		catalog.setBooks(booksOnlyId);
 			
-		return catalog;
-	}
-
-	@Override
-	public boolean delete(Integer id) {
-		Session session = sessionFactory.getCurrentSession();
-
-		Catalog catalog = new Catalog();
-		catalog.setId(id);
-		session.delete(catalog);
-		return true;
+		return Optional.of(catalog);
 	}
 
 	@Override
@@ -72,12 +56,9 @@ public class CatalogDAOImpl implements CatalogDAO{
 		Catalog catalog = session.get(Catalog.class, catalogId);
 		Book book = session.get(Book.class, bookId);
 		
-		
 		catalog.getBooks().add(book);
 		book.getCatalogs().add(catalog);
 		
-		
 	}
-
 
 }
