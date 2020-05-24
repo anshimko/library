@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.senlainc.library.dao.GenericDAO;
 import com.senlainc.library.entity.Model;
+import com.senlainc.library.search.SearchCriteria;
 import com.senlainc.library.service.GenericService;
 
 public abstract class AbstractService<E extends Model, D extends GenericDAO<E>> implements GenericService<E> {
@@ -34,8 +35,8 @@ public abstract class AbstractService<E extends Model, D extends GenericDAO<E>> 
     }
     
     @Override
-    public List<E> getAll() {
-    	return repository.getAll();
+    public List<E> getAll(int page, int size, List<SearchCriteria> params) {
+    	return repository.getAll(page, size, params);
     }
     
     @Override

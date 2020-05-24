@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.senlainc.library.entity.Catalog;
 import com.senlainc.library.service.CatalogService;
 
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping(value = "/catalogs")
 public class CatalogController extends AbstractController<Catalog, CatalogService>{
@@ -20,6 +22,7 @@ public class CatalogController extends AbstractController<Catalog, CatalogServic
 		super(service);
 	}
 	
+	@ApiOperation(value = "Add book to catalog")
 	@PostMapping(value = "/{catalogId}/books/{bookId}")
 	public ResponseEntity<?> addBookInCatalog(@PathVariable(name = "catalogId") 
 									@Min(value = 1, message = "id must be greater than or equal to 1") Integer catalogId,

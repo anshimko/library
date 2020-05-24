@@ -1,8 +1,5 @@
 package com.senlainc.library.aspect;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -24,9 +21,8 @@ public class RepositoryAspect {
 
 	@Before("repositoryClassMethods()")
 	public void logBeforeDaoCall(JoinPoint jp) {
-		String args = Arrays.stream(jp.getArgs()).map(a -> a.toString()).collect(Collectors.joining(","));
 
-		LOG.info("Call method: {} with parametrs: [{}]", jp.toString(), args);
+		LOG.info("Call method: {} with parametrs: [{}]", jp.toString());
 	}
 	
 	@After("repositoryClassMethods()")

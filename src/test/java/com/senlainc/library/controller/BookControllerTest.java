@@ -95,7 +95,7 @@ public class BookControllerTest {
 	@Test
 	public void readAllBooks() throws Exception {
 		
-		this.mockMvc.perform(get("/books")
+		this.mockMvc.perform(get("/books?page=1&size=20")
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())

@@ -19,6 +19,8 @@ import com.senlainc.library.entity.Book;
 import com.senlainc.library.entity.BookReturnDTO;
 import com.senlainc.library.entity.RentHistory;
 import com.senlainc.library.entity.User;
+import com.senlainc.library.search.EntitySearchQueryCriteriaConsumer;
+import com.senlainc.library.search.SearchCriteria;
 
 @Repository
 public class RentDAOImpl implements RentDAO {
@@ -78,15 +80,15 @@ public class RentDAOImpl implements RentDAO {
 	public boolean returned(Integer id) {
 		Session session = sessionFactory.getCurrentSession();
 		
-		int check = session.createNativeQuery(QUERY_RENT_IS_RETURNED)
+		session.createNativeQuery(QUERY_RENT_IS_RETURNED)
 					.setParameter(FIELD_BOOK, id)
 					.executeUpdate();
 
-		return (check == 1) ? true : false;
+		return true;
 	}
 
 	@Override
-	public List<Book> readAvailable() {
+	public List<Book> readAvailable(int page, int size, List<SearchCriteria> params) {
 		Session session = sessionFactory.getCurrentSession();
 		
 		CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -94,16 +96,27 @@ public class RentDAOImpl implements RentDAO {
 		Root<Book> root = criteria.from(Book.class);
 		Join<Book, RentHistory> join = root.join(TABLE_RENT_HISTORIES);
 		
-		criteria.select(root).where(cb.equal(join.get(FIELD_RETURNED), true));
+		criteria.select(root).where(cb.equal(join.get(FIELD_RETURNED), true)).distinct(true);
 		
-		List<Book> books = session.createQuery(criteria).getResultList();
+		// search by parameters
+		Predicate predicate = cb.conjunction();
+		EntitySearchQueryCriteriaConsumer searchConsumer =  new EntitySearchQueryCriteriaConsumer(predicate, cb, root);
+		params.stream().forEach(searchConsumer);
+		predicate = searchConsumer.getPredicate();
+		criteria.where(predicate);
+		
+		List<Book> books = session.createQuery(criteria)
+				.setFirstResult((page - 1) * size)
+				.setMaxResults(size)
+				.getResultList();
+		
 		books.forEach(book -> Hibernate.initialize(book.getAuthors()));
 		
 		return books;
 	}
 
 	@Override
-	public List<BookReturnDTO> readBorrow() {
+	public List<BookReturnDTO> readBorrow(int page, int size, List<SearchCriteria> params) {
 		Session session = sessionFactory.getCurrentSession();
 		
 		CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -112,15 +125,25 @@ public class RentDAOImpl implements RentDAO {
 		Join<Book, RentHistory> join = root.join(TABLE_RENT_HISTORIES);
 		
 		criteria.select(cb.construct(BookReturnDTO.class, root.get(FIELD_ID), root.get(FIELD_TITLE), join.get(FIELD_RETURNED_DATE)))
-				.where(cb.equal(join.get(FIELD_RETURNED), false));
+				.where(cb.equal(join.get(FIELD_RETURNED), false)).distinct(true);
 		
-		List<BookReturnDTO> books = session.createQuery(criteria).getResultList();
+		// search by parameters
+		Predicate predicate = cb.conjunction();
+		EntitySearchQueryCriteriaConsumer searchConsumer =  new EntitySearchQueryCriteriaConsumer(predicate, cb, root);
+		params.stream().forEach(searchConsumer);
+		predicate = searchConsumer.getPredicate();
+		criteria.where(predicate);
+
+		List<BookReturnDTO> books = session.createQuery(criteria)
+				.setFirstResult((page - 1) * size)
+				.setMaxResults(size)
+				.getResultList();
 		
 		return books;
 	}
 
 	@Override
-	public List<BookReturnDTO> readBorrowOverdue() {
+	public List<BookReturnDTO> readBorrowOverdue(int page, int size, List<SearchCriteria> params) {
 		Session session = sessionFactory.getCurrentSession();
 		
 		CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -134,9 +157,19 @@ public class RentDAOImpl implements RentDAO {
 		Predicate predicateForReturnDate = cb.lessThan(join.get(FIELD_RETURNED_DATE), cb.currentDate());
 		Predicate predicateForReturnedAndReturnDate = cb.and(predicateForReturned, predicateForReturnDate);
 				
-		criteria.where(predicateForReturnedAndReturnDate);
+		criteria.where(predicateForReturnedAndReturnDate).distinct(true);
 		
-		List<BookReturnDTO> books = session.createQuery(criteria).getResultList();
+		// search by parameters
+		Predicate predicate = cb.conjunction();
+		EntitySearchQueryCriteriaConsumer searchConsumer =  new EntitySearchQueryCriteriaConsumer(predicate, cb, root);
+		params.stream().forEach(searchConsumer);
+		predicate = searchConsumer.getPredicate();
+		criteria.where(predicate);
+		
+		List<BookReturnDTO> books = session.createQuery(criteria)
+				.setFirstResult((page - 1) * size)
+				.setMaxResults(size)
+				.getResultList();
 		
 		return books;
 	}

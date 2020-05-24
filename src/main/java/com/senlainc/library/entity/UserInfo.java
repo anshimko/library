@@ -86,7 +86,6 @@ public class UserInfo extends Model{
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((surname == null) ? 0 : surname.hashCode());
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		return result;
 	}
 
@@ -113,11 +112,6 @@ public class UserInfo extends Model{
 			if (other.surname != null)
 				return false;
 		} else if (!surname.equals(other.surname))
-			return false;
-		if (user == null) {
-			if (other.user != null)
-				return false;
-		} else if (!user.equals(other.user))
 			return false;
 		return true;
 	}

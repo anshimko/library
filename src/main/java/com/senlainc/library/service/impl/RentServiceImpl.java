@@ -11,6 +11,7 @@ import com.senlainc.library.dao.RentDAO;
 import com.senlainc.library.entity.Book;
 import com.senlainc.library.entity.BookReturnDTO;
 import com.senlainc.library.entity.RentHistory;
+import com.senlainc.library.search.SearchCriteria;
 import com.senlainc.library.service.RentService;
 
 @Service
@@ -28,20 +29,20 @@ public class RentServiceImpl implements RentService{
 
 	@Override
 	@Secured({"ROLE_ADMIN", "ROLE_READER"})
-	public List<Book> readAvailable() {
-		return rentDAO.readAvailable();
+	public List<Book> readAvailable(int page, int size, List<SearchCriteria> params) {
+		return rentDAO.readAvailable(page, size, params);
 	}
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	public List<BookReturnDTO> readBorrow() {
-		return rentDAO.readBorrow();
+	public List<BookReturnDTO> readBorrow(int page, int size, List<SearchCriteria> params) {
+		return rentDAO.readBorrow(page, size, params);
 	}
 
 	@Override
 	@Secured("ROLE_ADMIN")
-	public List<BookReturnDTO> readBorrowOverdue() {
-		return rentDAO.readBorrowOverdue();
+	public List<BookReturnDTO> readBorrowOverdue(int page, int size, List<SearchCriteria> params) {
+		return rentDAO.readBorrowOverdue(page, size, params);
 	}
 
 	@Override

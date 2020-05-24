@@ -5,16 +5,17 @@ import java.util.List;
 import com.senlainc.library.entity.Book;
 import com.senlainc.library.entity.BookReturnDTO;
 import com.senlainc.library.entity.RentHistory;
+import com.senlainc.library.search.SearchCriteria;
 
 public interface RentDAO {
 
 	List<RentHistory> readByBook(Integer id);
 
-	List<Book> readAvailable();
+	List<Book> readAvailable(int page, int size, List<SearchCriteria> params);
 
-	List<BookReturnDTO> readBorrow();
+	List<BookReturnDTO> readBorrow(int page, int size, List<SearchCriteria> params);
 
-	List<BookReturnDTO> readBorrowOverdue();
+	List<BookReturnDTO> readBorrowOverdue(int page, int size, List<SearchCriteria> params);
 
 	void create(RentHistory rentHistory);
 

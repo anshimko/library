@@ -87,37 +87,37 @@ public class RentControllerTest {
 	
 	@Test
 	public void testReadAvailable() throws Exception {
-		this.mockMvc.perform(get("/rents/books/available")
+		this.mockMvc.perform(get("/rents/books/available?page=1&size=20")
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$", hasSize(1)))
+				.andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].title", is("War and piec")));
 	}
 
 	@Test
 	public void testReadBorrow() throws Exception {
-		this.mockMvc.perform(get("/rents/borrow")
+		this.mockMvc.perform(get("/rents/borrow?page=1&size=20")
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id", is(2)))
-                .andExpect(jsonPath("$[0].title", is("Idiot")));
+				.andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].title", is("War and piec")));
                
 	}
 
 	@Test
 	public void testReadBorrowOverdue() throws Exception {
-		this.mockMvc.perform(get("/rents/borrow/overdue")
+		this.mockMvc.perform(get("/rents/borrow/overdue?page=1&size=20")
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$", hasSize(1)))
+				.andExpect(jsonPath("$", hasSize(3)))
 				.andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].title", is("War and piec")));
 	}

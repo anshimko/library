@@ -100,7 +100,7 @@ public class UserControllerTest {
 	@Test
 	public void readAllUsers() throws Exception {
 		
-		this.mockMvc.perform(get("/users/")
+		this.mockMvc.perform(get("/users?page=1&size=20")
 				.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())

@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.google.common.base.Objects;
+
 @Aspect
 @Component
 public class ControllerAspect {
@@ -23,19 +25,18 @@ public class ControllerAspect {
 	public void controllerClassMethods() {}
 
 	@Before("controllerClassMethods()")
-	public void logBeforeDaoCall(JoinPoint jp) {
-		String args = Arrays.stream(jp.getArgs()).map(a -> a.toString()).collect(Collectors.joining(","));
-
-		LOG.info("Call method: {} with parametrs: [{}]", jp.toString(), args);
+	public void logBeforeControllerCall(JoinPoint jp) {
+		
+		LOG.info("Call method: {} with parametrs: [{}]", jp.toString());
 	}
 	
 	@After("controllerClassMethods()")
-	public void logAfterDaoCall(JoinPoint jp) {
+	public void logAfterControllerCall(JoinPoint jp) {
 		LOG.info("After method {}", jp.toString());
 	}
 	
 	@AfterThrowing(pointcut = "controllerClassMethods()", throwing = "ex")
-	public void logAfterThrowingDaoCall(JoinPoint jp, Throwable ex)  throws Throwable {
+	public void logAfterThrowingControllerCall(JoinPoint jp, Throwable ex)  throws Throwable {
 
 		LOG.error("Method Signature: {} Exception: {}", jp.toString(), ex.getMessage());
 	}
