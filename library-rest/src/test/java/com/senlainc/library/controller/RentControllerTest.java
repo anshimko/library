@@ -33,11 +33,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.senlainc.library.config.H2PersistenceConfig;
+import com.senlainc.library.ConverterObjectToJson;
 import com.senlainc.library.config.WebConfig;
-import com.senlainc.library.entity.Book;
+import com.senlainc.library.configDB.H2PersistenceConfig;
+import com.senlainc.library.dto.RentDTO;
 import com.senlainc.library.entity.RentHistory;
-import com.senlainc.library.entity.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {WebConfig.class,
@@ -92,7 +92,7 @@ public class RentControllerTest {
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$", hasSize(2)))
+				.andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].title", is("War and piec")));
 	}
@@ -104,9 +104,9 @@ public class RentControllerTest {
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].title", is("War and piec")));
+				.andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].bookId", is(1)))
+                .andExpect(jsonPath("$[0].bookTitle", is("War and piec")));
                
 	}
 
@@ -117,25 +117,18 @@ public class RentControllerTest {
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$", hasSize(3)))
-				.andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].title", is("War and piec")));
+				.andExpect(jsonPath("$", hasSize(2)))
+				.andExpect(jsonPath("$[0].bookId", is(1)))
+                .andExpect(jsonPath("$[0].bookTitle", is("War and piec")));
 	}
 
 	@Test
 	public void testCreate() throws Exception {
 		
-		User user = new User();
-		user.setId(2);
-		Book book = new Book();
-		book.setId(1);
-		RentHistory rent = new RentHistory(user, book, Date.valueOf("2020-06-17"),  Date.valueOf("2020-07-17"), false);
-		rent.setId(5);
-		rent.getUser().getRentHistories().add(rent);
-		rent.getBook().getRentHistories().add(rent);
+		RentDTO rentDTO = new RentDTO(1, 1, 3, Date.valueOf("2020-06-17"), Date.valueOf("2020-07-17"), false);
 		
 		this.mockMvc.perform(post("/rents")
-				.content(ConverterObjectToJson.convert(rent))
+				.content(ConverterObjectToJson.convert(rentDTO))
 				.contentType(MediaType.APPLICATION_JSON)
 			    .accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated());

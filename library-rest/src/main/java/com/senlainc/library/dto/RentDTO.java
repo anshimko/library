@@ -13,6 +13,20 @@ public class RentDTO {
 	private Date returnDate;
 	private boolean returned;
 
+	public RentDTO() {
+		super();
+	}
+
+	public RentDTO(Integer id, Integer userId, Integer bookId, Date borrowDate, Date returnDate, boolean returned) {
+		super();
+		this.id = id;
+		this.userId = userId;
+		this.bookId = bookId;
+		this.borrowDate = borrowDate;
+		this.returnDate = returnDate;
+		this.returned = returned;
+	}
+
 	public Integer getId() {
 		return id;
 	}

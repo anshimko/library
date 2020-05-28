@@ -32,7 +32,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.senlainc.library.config.H2PersistenceConfig;
+import com.senlainc.library.configDB.H2PersistenceConfig;
+import com.senlainc.library.ConverterObjectToJson;
 import com.senlainc.library.config.WebConfig;
 import com.senlainc.library.entity.Book;
 

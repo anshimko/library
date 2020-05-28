@@ -21,9 +21,12 @@
 			<groupId>com.senlainc</groupId>
 			<artifactId>library-impl</artifactId>
 			<version>1.0-SNAPSHOT</version>
+			<type>jar</type>
 		</dependency>
+		
 	</dependencies>
+	
 	<build>
-		<finalName>library-rest</finalName>
+ 		<finalName>library-rest</finalName>
 	</build>
 </project>
