@@ -11,15 +11,23 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>library-api</artifactId>
+	<artifactId>impl</artifactId>
 	<packaging>jar</packaging>
 
+	<name>impl</name>
 
-	<name>library-api</name>
-	<url>http://maven.apache.org</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.senlainc</groupId>
+			<artifactId>api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<type>jar</type>
+		</dependency>
+	</dependencies>
 
 </project>

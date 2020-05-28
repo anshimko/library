@@ -11,22 +11,13 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>library-rest</artifactId>
-	<packaging>war</packaging>
-	<name>library-rest</name>
+	<artifactId>api</artifactId>
+	<packaging>jar</packaging>
 
-	<dependencies>
-		
-		<dependency>
-			<groupId>com.senlainc</groupId>
-			<artifactId>library-impl</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			<type>jar</type>
-		</dependency>
-		
-	</dependencies>
-	
-	<build>
- 		<finalName>library-rest</finalName>
-	</build>
+	<name>api</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 </project>
