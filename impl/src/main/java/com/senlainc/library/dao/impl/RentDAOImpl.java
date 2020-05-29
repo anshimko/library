@@ -4,10 +4,9 @@ import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -29,9 +28,7 @@ public class RentDAOImpl implements RentDAO {
 	private static final String FIELD_BOOK = "book";
 	private static final String FIELD_RETURNED_DATE = "returnDate";
 	private static final String FIELD_RETURNED = "returned";
-	
-	private static final String TABLE_RENT_HISTORIES = "rentHistories";
-	
+		
 	private static final String QUERY_RENT_IS_RETURNED = "UPDATE rent_history SET is_returned = true WHERE books_id = :book AND is_returned = false";
 
 	@Autowired
@@ -92,18 +89,32 @@ public class RentDAOImpl implements RentDAO {
 		
 		CriteriaBuilder cb = session.getCriteriaBuilder();
 		CriteriaQuery<Book> criteria = cb.createQuery(Book.class);
-		Root<Book> root = criteria.from(Book.class);
-		Join<Book, RentHistory> join = root.join(TABLE_RENT_HISTORIES, JoinType.LEFT);
+		Root<Book> rootBook = criteria.from(Book.class);
 		
-		criteria.select(root).where(cb.equal(join.get(FIELD_RETURNED), true)).distinct(true);
+		Subquery<RentHistory> rentSubquery = criteria.subquery(RentHistory.class);
+		Root<RentHistory> rootRent = rentSubquery.from(RentHistory.class);
 		
-		// search by parameters
-		Predicate predicate = cb.conjunction();
-		EntitySearchQueryCriteriaConsumer searchConsumer =  new EntitySearchQueryCriteriaConsumer(predicate, cb, root);
+		Predicate predicateForReturned = cb.equal(rootRent.get(FIELD_RETURNED), false);
+		Predicate predicateForExists = cb.equal(rootRent.get(FIELD_BOOK), rootBook);
+		
+		
+		Predicate predicateForReturnedAndExists = cb.and(predicateForReturned, predicateForExists);
+		
+		rentSubquery.select(rootRent)
+			.where(predicateForReturnedAndExists).distinct(true);
+		
+		// parameter search
+		Predicate predicateSearch = cb.conjunction();
+		EntitySearchQueryCriteriaConsumer searchConsumer =  new EntitySearchQueryCriteriaConsumer(predicateSearch, cb, rootBook);
 		params.stream().forEach(searchConsumer);
-		predicate = searchConsumer.getPredicate();
-		criteria.where(predicate);
+		predicateSearch = searchConsumer.getPredicate();
 		
+		Predicate predicateExistsRow = cb.not(cb.exists(rentSubquery));
+		Predicate predicateSearchAndExistsRow = cb.and(predicateSearch,predicateExistsRow);
+		
+		criteria.select(rootBook).where(predicateSearchAndExistsRow).orderBy(cb.asc(rootBook.get("id")));
+		
+		//pagination 
 		List<Book> books = session.createQuery(criteria)
 				.setFirstResult((page - 1) * size)
 				.setMaxResults(size)
@@ -120,53 +131,82 @@ public class RentDAOImpl implements RentDAO {
 		
 		CriteriaBuilder cb = session.getCriteriaBuilder();
 		CriteriaQuery<Book> criteria = cb.createQuery(Book.class);
-		Root<Book> root = criteria.from(Book.class);
-		Join<Book, RentHistory> join = root.join(TABLE_RENT_HISTORIES);
+		Root<Book> rootBook = criteria.from(Book.class);
 		
-		criteria.where(cb.equal(join.get(FIELD_RETURNED), false)).distinct(true);
+		Subquery<RentHistory> rentSubquery = criteria.subquery(RentHistory.class);
+		Root<RentHistory> rootRent = rentSubquery.from(RentHistory.class);
 		
-		// search by parameters
-		Predicate predicate = cb.conjunction();
-		EntitySearchQueryCriteriaConsumer searchConsumer =  new EntitySearchQueryCriteriaConsumer(predicate, cb, root);
+		Predicate predicateForReturned = cb.equal(rootRent.get(FIELD_RETURNED), false);
+		Predicate predicateForExists = cb.equal(rootRent.get(FIELD_BOOK), rootBook);
+		
+		
+		Predicate predicateForReturnedAndExists = cb.and(predicateForReturned, predicateForExists);
+		
+		rentSubquery.select(rootRent)
+			.where(predicateForReturnedAndExists).distinct(true);
+		
+		// parameter search
+		Predicate predicateSearch = cb.conjunction();
+		EntitySearchQueryCriteriaConsumer searchConsumer =  new EntitySearchQueryCriteriaConsumer(predicateSearch, cb, rootBook);
 		params.stream().forEach(searchConsumer);
-		predicate = searchConsumer.getPredicate();
-		criteria.where(predicate);
-
+		predicateSearch = searchConsumer.getPredicate();
+		
+		Predicate predicateExistsRow = cb.exists(rentSubquery);
+		Predicate predicateSearchAndExistsRow = cb.and(predicateSearch,predicateExistsRow);
+		
+		criteria.select(rootBook).where(predicateSearchAndExistsRow).orderBy(cb.asc(rootBook.get("id")));
+		
+		//pagination 
 		List<Book> books = session.createQuery(criteria)
 				.setFirstResult((page - 1) * size)
 				.setMaxResults(size)
 				.getResultList();
+		
+		books.forEach(book -> Hibernate.initialize(book.getAuthors()));
 		
 		return books;
 	}
 
 	@Override
 	public List<Book> readBorrowOverdue(int page, int size, List<SearchCriteria> params) {
-		Session session = sessionFactory.getCurrentSession();
+Session session = sessionFactory.getCurrentSession();
 		
 		CriteriaBuilder cb = session.getCriteriaBuilder();
 		CriteriaQuery<Book> criteria = cb.createQuery(Book.class);
-		Root<Book> root = criteria.from(Book.class);
-		Join<Book, RentHistory> join = root.join(TABLE_RENT_HISTORIES);
+		Root<Book> rootBook = criteria.from(Book.class);
 		
-		Predicate predicateForReturned = cb.equal(join.get(FIELD_RETURNED), false);
-		Predicate predicateForReturnDate = cb.lessThan(join.get(FIELD_RETURNED_DATE), cb.currentDate());
-		Predicate predicateForReturnedAndReturnDate = cb.and(predicateForReturned, predicateForReturnDate);
-				
-		criteria.where(predicateForReturnedAndReturnDate).distinct(true);
+		Subquery<RentHistory> rentSubquery = criteria.subquery(RentHistory.class);
+		Root<RentHistory> rootRent = rentSubquery.from(RentHistory.class);
 		
-		// search by parameters
-		Predicate predicate = cb.conjunction();
-		EntitySearchQueryCriteriaConsumer searchConsumer =  new EntitySearchQueryCriteriaConsumer(predicate, cb, root);
+		Predicate predicateForReturned = cb.equal(rootRent.get(FIELD_RETURNED), false);
+		Predicate predicateForExists = cb.equal(rootRent.get(FIELD_BOOK), rootBook);
+		Predicate predicateForReturnDate = cb.lessThan(rootRent.get(FIELD_RETURNED_DATE), cb.currentDate());
+		
+		
+		Predicate predicateForReturnedAndExists = cb.and(predicateForReturned, predicateForExists, predicateForReturnDate);
+		
+		rentSubquery.select(rootRent)
+			.where(predicateForReturnedAndExists).distinct(true);
+		
+		// parameter search
+		Predicate predicateSearch = cb.conjunction();
+		EntitySearchQueryCriteriaConsumer searchConsumer =  new EntitySearchQueryCriteriaConsumer(predicateSearch, cb, rootBook);
 		params.stream().forEach(searchConsumer);
-		predicate = searchConsumer.getPredicate();
-		criteria.where(predicate);
+		predicateSearch = searchConsumer.getPredicate();
 		
+		Predicate predicateExistsRow = cb.exists(rentSubquery);
+		Predicate predicateSearchAndExistsRow = cb.and(predicateSearch,predicateExistsRow);
+		
+		criteria.select(rootBook).where(predicateSearchAndExistsRow).orderBy(cb.asc(rootBook.get("id")));
+		
+		//pagination 
 		List<Book> books = session.createQuery(criteria)
 				.setFirstResult((page - 1) * size)
 				.setMaxResults(size)
 				.getResultList();
 		
+		books.forEach(book -> Hibernate.initialize(book.getAuthors()));
+	
 		return books;
 	}
 

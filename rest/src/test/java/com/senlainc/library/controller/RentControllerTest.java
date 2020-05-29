@@ -92,9 +92,9 @@ public class RentControllerTest {
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].title", is("War and piec")));
+				.andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", is(3)))
+                .andExpect(jsonPath("$[0].title", is("Monblan")));
 	}
 
 	@Test
@@ -117,7 +117,7 @@ public class RentControllerTest {
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$", hasSize(2)))
+				.andExpect(jsonPath("$", hasSize(1)))
 				.andExpect(jsonPath("$[0].bookId", is(1)))
                 .andExpect(jsonPath("$[0].bookTitle", is("War and piec")));
 	}
