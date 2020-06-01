@@ -1,4 +1,7 @@
 /target
+<<<<<<< HEAD
 */target
+=======
+>>>>>>> 091ffcd7de2539ff58c83f46b2f60c7a48e1f45b
 .*
 !.gitignore
