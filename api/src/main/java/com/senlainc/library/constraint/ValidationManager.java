@@ -19,7 +19,7 @@ public class ValidationManager {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(clazz);
 		criteria.add(Restrictions.eq(name, value));
-		return criteria.uniqueResult() == null ? true : false;
+		return criteria.uniqueResult() == null;
 		
 	}
 
